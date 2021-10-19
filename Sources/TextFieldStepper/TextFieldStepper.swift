@@ -60,6 +60,12 @@ public struct TextFieldStepper: View {
     
     let label: String
     let measurement: String
+    
+    public init(double: Binding<Double>, label: String, measurement: String) {
+        self._double = double
+        self.label = label
+        self.measurement = measurement
+    }
 
     public var body: some View {
         HStack {
