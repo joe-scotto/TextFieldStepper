@@ -110,7 +110,7 @@ public struct TextFieldStepper: View {
 
     func validateValue() {
         if value == "" || value == "0.0" || Double(value) == nil || Double(value)! == 0 {
-            // poorly formatted number, default to 1mm
+            // poorly formatted number, default to 0
             double = 0
             value = formatTextValue(0)
         } else if (Double(value)!  > 100) {
@@ -122,7 +122,7 @@ public struct TextFieldStepper: View {
     }
 }
 
-struct FocalLengthStepper_Previews: PreviewProvider {
+struct TextFieldStepper_Previews: PreviewProvider {
     static var previews: some View {
         TextFieldStepper(double: .constant(50.0), label: "product", measurement: "g")
     }
