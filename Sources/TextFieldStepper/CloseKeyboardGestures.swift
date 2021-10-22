@@ -14,8 +14,7 @@ struct CloseKeyboardGestures: ViewModifier {
         }))
     }
 }
-
-extension View {
+public extension View {
     func closeKeyboardGestures() -> some View {
         modifier(CloseKeyboardGestures())
     }
