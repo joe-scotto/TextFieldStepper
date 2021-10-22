@@ -52,11 +52,20 @@ public struct TextFieldStepper: View {
     @State private var textValue: String = "0.0"
     @State private var keyboardOpened = false
     
-    var label = ""
-    var measurement = ""
-    var minimum = 0.0
-    var maximum = 100.0
-    var increment = 0.1
+    let label: String
+    let measurement: String
+    var minimum: Double
+    var maximum: Double
+    var increment: Double
+    
+    public init(double: Binding<Double>, label: String = "", measurement: String = "", minimum: Double = 0.0, maximum: Double = 100.0, increment: Double = 0.1) {
+        self._double = double
+        self.label = label
+        self.measurement = measurement
+        self.minimum = minimum
+        self.maximum = maximum
+        self.increment = increment
+    }
 
     public var body: some View {
         HStack {
