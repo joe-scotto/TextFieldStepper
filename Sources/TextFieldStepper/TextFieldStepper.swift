@@ -123,6 +123,14 @@ public struct TextFieldStepper: View {
         }
         .padding()
         .onAppear {
+            if doubleValue < config.minimum {
+                doubleValue = config.minimum
+            }
+            
+            if doubleValue > config.maximum {
+                doubleValue = config.maximum
+            }
+            
             textValue = formatTextValue(doubleValue)
         }
     }
