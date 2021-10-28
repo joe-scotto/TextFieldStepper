@@ -40,7 +40,7 @@ fileprivate struct LongPressButton: View {
     }
 }
 
-public class TextFieldStepperConfig: ObservableObject {
+public struct TextFieldStepperConfig { 
     let label: String
     let measurement: String
     let increment: Double
