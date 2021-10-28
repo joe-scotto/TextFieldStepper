@@ -40,7 +40,7 @@ fileprivate struct LongPressButton: View {
     }
 }
 
-public struct TextFieldStepperConfig { 
+public struct TextFieldStepperConfig {
     let label: String
     let measurement: String
     let increment: Double
@@ -139,6 +139,9 @@ public struct TextFieldStepper: View {
         } else if (Double(textValue)!  > config.maximum) {
             doubleValue = config.maximum
             textValue = formatTextValue(config.maximum)
+        } else if (Double(textValue)! < config.minimum) {
+            doubleValue = config.minimum
+            textValue = formatTextValue(config.minimum)
         } else {
             doubleValue = Double(textValue) ?? config.minimum
         }
