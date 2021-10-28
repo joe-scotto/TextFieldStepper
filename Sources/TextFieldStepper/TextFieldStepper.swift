@@ -84,7 +84,12 @@ public struct TextFieldStepper: View {
     @State private var textValue: String = "0.0"
     @State private var keyboardOpened = false
     
-    let config: TextFieldStepperConfig = TextFieldStepperConfig()
+    let config: TextFieldStepperConfig
+    
+    public init(doubleValue: Binding<Double>, config: TextFieldStepperConfig? = nil) {
+        self._doubleValue = doubleValue
+        self.config = config ?? TextFieldStepperConfig()
+    }
     
     public var body: some View {
         HStack {
