@@ -47,7 +47,7 @@ public class TextFieldStepperConfig: ObservableObject {
     let minimum: Double
     let maximum: Double
     
-    init(label: String = "Product", measurement: String = "g", increment: Double = 0.1, minimum: Double = 0.0, maximum: Double = 100.0) {
+    public init(label: String = "Product", measurement: String = "g", increment: Double = 0.1, minimum: Double = 0.0, maximum: Double = 100.0) {
         self.label = label
         self.measurement = measurement
         self.increment = increment
