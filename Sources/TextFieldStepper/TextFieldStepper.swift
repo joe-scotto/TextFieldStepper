@@ -40,86 +40,111 @@ fileprivate struct LongPressButton: View {
     }
 }
 
+public class TextFieldStepperConfig: ObservableObject {
+    let label: String
+    let measurement: String
+    let increment: Double
+    let minimum: Double
+    let maximum: Double
+    
+    init(label: String = "Product", measurement: String = "g", increment: Double = 0.1, minimum: Double = 0.0, maximum: Double = 100.0) {
+        self.label = label
+        self.measurement = measurement
+        self.increment = increment
+        self.minimum = minimum
+        self.maximum = maximum
+    }
+}
+
+fileprivate extension View {
+    func thiccText() -> some View {
+        self.multilineTextAlignment(.center)
+            .font(.system(size: 24, weight: .black))
+            .keyboardType(.decimalPad)
+    }
+}
+
+fileprivate extension Text {
+    func notSoThiccText() -> Text {
+        self
+            .font(.footnote)
+            .fontWeight(.light)
+    }
+}
+
 
 // TODO: Refactor... Long press and validation
 public struct TextFieldStepper: View {
-    @Binding var double: Double {
+    @Binding var doubleValue: Double {
         didSet {
-            textValue = formatTextValue(double)
+            textValue = formatTextValue(doubleValue)
         }
     }
 
     @State private var textValue: String = "0.0"
     @State private var keyboardOpened = false
     
-    let label: String
-    let measurement: String
-    var minimum: Double
-    var maximum: Double
-    var increment: Double
+    public let config: TextFieldStepperConfig = TextFieldStepperConfig()
+//
+//    init(_ config: TextFieldStepperConfig? = nil) {
+//        var defaultConfig: TextFieldStepperConfig
+//
+//        guard let defaultConfig = config else {
+//            defaultConfig = TextFieldStepperConfig()
+//
+//        }
+//    }
     
-    public init(double: Binding<Double>, label: String = "", measurement: String = "", minimum: Double = 0.0, maximum: Double = 100.0, increment: Double = 0.1) {
-        self._double = double
-        self.label = label
-        self.measurement = measurement
-        self.minimum = minimum
-        self.maximum = maximum
-        self.increment = increment
-    }
-
     public var body: some View {
         HStack {
-            LongPressButton(double: $double, image: "minus.circle.fill") {
-                double = (double - increment) >= minimum ? double - increment : double
+            LongPressButton(double: $doubleValue, image: "minus.circle.fill") {
+                doubleValue = (doubleValue - config.increment) >= config.minimum ? doubleValue - config.increment : doubleValue
             }
-            .disabled(double <= minimum || keyboardOpened)
+            .disabled(doubleValue <= config.minimum || keyboardOpened)
             
             VStack {
                 TextField("", text: $textValue) { editingChanged in
                     if editingChanged {
                         keyboardOpened = true
-                        textValue = textValue.replacingOccurrences(of: measurement, with: "")
+                        textValue = textValue.replacingOccurrences(of: config.measurement, with: "")
                     } else {
                         keyboardOpened = false
                         validateValue()
                     }
                 }
-                .multilineTextAlignment(.center)
-                .font(.system(size: 24, weight: .black))
-                .keyboardType(.decimalPad)
+                .thiccText()
                 
-                if label != "" {
-                    Text(label)
-                    .font(.footnote)
-                    .fontWeight(.light)
+                if config.label != "" {
+                    Text(config.label)
+                        .notSoThiccText()
                 }
             }
             
-            LongPressButton(double: $double, image: "plus.circle.fill") {
-                double = (double + increment) <= maximum ? double + increment : double
+            LongPressButton(double: $doubleValue, image: "plus.circle.fill") {
+                doubleValue = (doubleValue + config.increment) <= config.maximum ? doubleValue + config.increment : doubleValue
             }
-            .disabled(double >= maximum || keyboardOpened)
+            .disabled(doubleValue >= config.maximum || keyboardOpened)
         }
         .padding()
         .onAppear {
-            textValue = formatTextValue(double)
+            textValue = formatTextValue(doubleValue)
         }
     }
 
     func formatTextValue(_ value: Double) -> String {
-        return "\(String(format: "%g", value))\(measurement)"
+        return "\(String(format: "%g", value))\(config.measurement)"
     }
 
     func validateValue() {
-        if textValue == "" || textValue == String(minimum) || Double(textValue) == nil || Double(textValue)! == minimum {
+        if textValue == "" || textValue == String(config.minimum) || Double(textValue) == nil || Double(textValue)! == config.minimum {
             // poorly formatted number, default to 0
-            double = minimum
-            textValue = formatTextValue(minimum)
-        } else if (Double(textValue)!  > maximum) {
-            double = maximum
-            textValue = formatTextValue(maximum)
+            doubleValue = config.minimum
+            textValue = formatTextValue(config.minimum)
+        } else if (Double(textValue)!  > config.maximum) {
+            doubleValue = config.maximum
+            textValue = formatTextValue(config.maximum)
         } else {
-            double = Double(textValue) ?? minimum
+            doubleValue = Double(textValue) ?? config.minimum
         }
     }
 }
@@ -127,8 +152,7 @@ public struct TextFieldStepper: View {
 struct TextFieldStepper_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            TextFieldStepper(double: .constant(50.0), label: "product", measurement: "g")
-            TextFieldStepper(double: .constant(50.0))
+            TextFieldStepper(doubleValue: .constant(50.0))
         }
     }
 }
