@@ -7,6 +7,7 @@ fileprivate struct LongPressButton: View {
     @State private var isLongPressing = false
 
     let image: String
+    let config: TextFieldStepperConfig
     let action: () -> Void
 
     var body: some View {
@@ -24,7 +25,7 @@ fileprivate struct LongPressButton: View {
                 isLongPressing = true
                 timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true, block: { _ in
                     // FIXME: Long press won't start on min or max.
-                    if (double > 0 && double < 100) {
+                    if (double > config.minimum && double < config.maximum) {
                         action()
                     } else {
                         invalidateLongPress()
@@ -93,7 +94,7 @@ public struct TextFieldStepper: View {
     
     public var body: some View {
         HStack {
-            LongPressButton(double: $doubleValue, image: "minus.circle.fill") {
+            LongPressButton(double: $doubleValue, image: "minus.circle.fill", config: config) {
                 doubleValue = (doubleValue - config.increment) >= config.minimum ? doubleValue - config.increment : doubleValue
             }
             .disabled(doubleValue <= config.minimum || keyboardOpened)
@@ -116,7 +117,7 @@ public struct TextFieldStepper: View {
                 }
             }
             
-            LongPressButton(double: $doubleValue, image: "plus.circle.fill") {
+            LongPressButton(double: $doubleValue, image: "plus.circle.fill", config: config) {
                 doubleValue = (doubleValue + config.increment) <= config.maximum ? doubleValue + config.increment : doubleValue
             }
             .disabled(doubleValue >= config.maximum || keyboardOpened)
