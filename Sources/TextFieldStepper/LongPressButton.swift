@@ -1,6 +1,6 @@
 import SwiftUI
 
-internal struct LongPressButton: View {
+struct LongPressButton: View {
     @Binding var double: Double
 
     @State private var timer: Timer? = nil
