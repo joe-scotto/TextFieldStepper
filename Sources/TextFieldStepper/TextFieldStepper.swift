@@ -1,6 +1,6 @@
 import SwiftUI
 
-fileprivate struct LongPressButton: View {
+struct LongPressButton: View {
     @Binding var double: Double
 
     @State private var timer: Timer? = nil
@@ -22,15 +22,7 @@ fileprivate struct LongPressButton: View {
         })
         .frame(height: 35)
         .simultaneousGesture(LongPressGesture(minimumDuration: 0.25).onEnded { _ in
-                isLongPressing = true
-                timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true, block: { _ in
-                    // FIXME: Long press won't start on min or max.
-                    if (double > config.minimum && double < config.maximum) {
-                        action()
-                    } else {
-                        invalidateLongPress()
-                    }
-                })
+            startTimer()
         })
         .buttonStyle(PlainButtonStyle())
     }
@@ -39,21 +31,17 @@ fileprivate struct LongPressButton: View {
         isLongPressing = false
         timer?.invalidate()
     }
-}
-
-public struct TextFieldStepperConfig {
-    let label: String
-    let measurement: String
-    let increment: Double
-    let minimum: Double
-    let maximum: Double
     
-    public init(label: String = "Product", measurement: String = "g", increment: Double = 0.1, minimum: Double = 0.0, maximum: Double = 100.0) {
-        self.label = label
-        self.measurement = measurement
-        self.increment = increment
-        self.minimum = minimum
-        self.maximum = maximum
+    func startTimer() {
+        isLongPressing = true
+        timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true, block: { _ in
+            // FIXME: Long press won't start on min or max.
+            if (double > config.minimum && double < config.maximum) {
+                action()
+            } else {
+                invalidateLongPress()
+            }
+        })
     }
 }
 
@@ -94,7 +82,7 @@ public struct TextFieldStepper: View {
     
     public var body: some View {
         HStack {
-            LongPressButton(double: $doubleValue, image: "minus.circle.fill", config: config) {
+            LongPressButton(double: $doubleValue, image: config.decrementImage, config: config) {
                 doubleValue = (doubleValue - config.increment) >= config.minimum ? doubleValue - config.increment : doubleValue
             }
             .disabled(doubleValue <= config.minimum || keyboardOpened)
@@ -117,7 +105,7 @@ public struct TextFieldStepper: View {
                 }
             }
             
-            LongPressButton(double: $doubleValue, image: "plus.circle.fill", config: config) {
+            LongPressButton(double: $doubleValue, image: config.incrementImage, config: config) {
                 doubleValue = (doubleValue + config.increment) <= config.maximum ? doubleValue + config.increment : doubleValue
             }
             .disabled(doubleValue >= config.maximum || keyboardOpened)
