@@ -1,27 +1,5 @@
 import SwiftUI
 
-fileprivate extension View {
-    func thiccText() -> some View {
-        self.multilineTextAlignment(.center)
-            .font(.system(size: 24, weight: .black))
-            .keyboardType(.decimalPad)
-    }
-}
-
-fileprivate extension Text {
-    func notSoThiccText() -> Text {
-        self
-            .font(.footnote)
-            .fontWeight(.light)
-    }
-}
-
-protocol TextFieldStepperConfigProtocol {
-    var minimum: Double { get
-    }
-}
-
-
 // TODO: Refactor... Long press and validation
 public struct TextFieldStepper: View {
     @Binding var doubleValue: Double {
@@ -29,43 +7,46 @@ public struct TextFieldStepper: View {
             textValue = formatTextValue(doubleValue)
         }
     }
+    
 
     @State private var textValue: String = "0.0"
     @State private var keyboardOpened = false
     
     let config: TextFieldStepperConfig
     
-    public init(doubleValue: Binding<Double>, config: TextFieldStepperConfig? = nil) {
+    public init(doubleValue: Binding<Double>, config: TextFieldStepperConfig = TextFieldStepperConfig()) {
         self._doubleValue = doubleValue
-        self.config = config ?? TextFieldStepperConfig()
+        self.config = config
     }
     
     public var body: some View {
         HStack {
-            LongPressButton(double: $doubleValue, image: config.decrementImage, config: config) {
+            LongPressButton(doubleValue: $doubleValue, config: config, button: config.decrementButton) {
                 doubleValue = (doubleValue - config.increment) >= config.minimum ? doubleValue - config.increment : doubleValue
-            }
-            .disabled(doubleValue <= config.minimum || keyboardOpened)
+            }.disabled(doubleValue <= config.minimum || keyboardOpened)
             
             VStack {
                 TextField("", text: $textValue) { editingChanged in
                     if editingChanged {
                         keyboardOpened = true
-                        textValue = textValue.replacingOccurrences(of: config.measurement, with: "")
+                        textValue = textValue.replacingOccurrences(of: config.unit, with: "")
                     } else {
                         keyboardOpened = false
                         validateValue()
                     }
                 }
-                .thiccText()
+                .multilineTextAlignment(.center)
+                .font(.system(size: 24, weight: .black))
+                .keyboardType(.decimalPad)
                 
                 if config.label != "" {
                     Text(config.label)
-                        .notSoThiccText()
+                        .font(.footnote)
+                        .fontWeight(.light)
                 }
             }
             
-            LongPressButton(double: $doubleValue, image: config.incrementImage, config: config) {
+            LongPressButton(doubleValue: $doubleValue, config: config, button: config.incrementButton) {
                 doubleValue = (doubleValue + config.increment) <= config.maximum ? doubleValue + config.increment : doubleValue
             }
             .disabled(doubleValue >= config.maximum || keyboardOpened)
@@ -85,7 +66,7 @@ public struct TextFieldStepper: View {
     }
 
     func formatTextValue(_ value: Double) -> String {
-        return "\(String(format: "%g", value))\(config.measurement)"
+        return String(format: "%g", value) + config.unit
     }
 
     func validateValue() {
@@ -110,5 +91,5 @@ struct TextFieldStepper_Previews: PreviewProvider {
         VStack {
             TextFieldStepper(doubleValue: .constant(50.0))
         }
-    }
+     }
 }
