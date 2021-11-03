@@ -8,7 +8,6 @@ public struct TextFieldStepper: View {
         }
     }
     
-
     @State private var textValue: String = "0.0"
     @State private var keyboardOpened = false
     
@@ -21,9 +20,14 @@ public struct TextFieldStepper: View {
     
     public var body: some View {
         HStack {
-            LongPressButton(doubleValue: $doubleValue, config: config, button: config.decrementButton) {
-                doubleValue = (doubleValue - config.increment) >= config.minimum ? doubleValue - config.increment : doubleValue
-            }.disabled(doubleValue <= config.minimum || keyboardOpened)
+            // Decrease
+            LongPressButton(
+                doubleValue: $doubleValue,
+                config: config,
+                button: config.decrementButton,
+                action: decrease
+            )
+            .disabled(doubleValue <= config.minimum || keyboardOpened)
             
             VStack {
                 TextField("", text: $textValue) { editingChanged in
@@ -46,9 +50,13 @@ public struct TextFieldStepper: View {
                 }
             }
             
-            LongPressButton(doubleValue: $doubleValue, config: config, button: config.incrementButton) {
-                doubleValue = (doubleValue + config.increment) <= config.maximum ? doubleValue + config.increment : doubleValue
-            }
+            // Increase
+            LongPressButton(
+                doubleValue: $doubleValue,
+                config: config,
+                button: config.incrementButton,
+                action: increase
+            )
             .disabled(doubleValue >= config.maximum || keyboardOpened)
         }
         .padding()
@@ -65,6 +73,14 @@ public struct TextFieldStepper: View {
         }
     }
 
+    func decrease() {
+        doubleValue = (doubleValue - config.increment) >= config.minimum ? doubleValue - config.increment : doubleValue
+    }
+    
+    func increase() {
+        doubleValue = (doubleValue + config.increment) <= config.maximum ? doubleValue + config.increment : doubleValue
+    }
+    
     func formatTextValue(_ value: Double) -> String {
         return String(format: "%g", value) + config.unit
     }
@@ -84,12 +100,4 @@ public struct TextFieldStepper: View {
             doubleValue = Double(textValue) ?? config.minimum
         }
     }
-}
-
-struct TextFieldStepper_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack {
-            TextFieldStepper(doubleValue: .constant(50.0))
-        }
-     }
 }
