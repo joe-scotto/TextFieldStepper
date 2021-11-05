@@ -17,16 +17,10 @@ public struct TextFieldStepper: View {
     }
     
     @State private var keyboardOpened = false
+    @State private var confirmEdit = false
+    @State private var textValue: String = "0.0"
     
     let config: TextFieldStepperConfig
-    @State private var buttonTapped = Buttons.decline
-    
-    enum Buttons {
-        case decline,
-             confirm
-    }
-    
-    @State private var textValue: String = "0.0"
     
     public init(doubleValue: Binding<Double>, config: TextFieldStepperConfig = TextFieldStepperConfig()) {
         self._doubleValue = doubleValue
@@ -37,10 +31,9 @@ public struct TextFieldStepper: View {
         HStack {
             if keyboardOpened {
                 Button(action: {
-                    buttonTapped = .decline
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                  }, label: {
-                   
+                    confirmEdit = false
+                    self.closeKeyboard()
+                }, label: {
                       config.declineButton.body
                 })
             } else {
@@ -61,7 +54,7 @@ public struct TextFieldStepper: View {
                     } else {
                         keyboardOpened = false
                         
-                        if buttonTapped == .decline {
+                        if !confirmEdit {
                             textValue = String(format: "%.1f", doubleValue) + "g"
                         } else {
                             validateValue()
@@ -82,8 +75,8 @@ public struct TextFieldStepper: View {
             // Increase
             if keyboardOpened {
                 Button(action: {
-                    buttonTapped = .confirm
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    confirmEdit = true
+                    self.closeKeyboard()
                   }, label: {
                       config.confirmButton.body
                           
@@ -103,6 +96,7 @@ public struct TextFieldStepper: View {
         .onAppear {
             textValue = formatTextValue(doubleValue)
         }
+        .closeKeyboardGesture()
     }
 
     func decrease() {

@@ -1,20 +1,19 @@
 import SwiftUI
 
-fileprivate struct CloseKeyboardGesture: ViewModifier {
-    func body(content: Content) -> some View {
-        // Close keyboard on tap
-        content.gesture(
+extension View {
+    func closeKeyboardGesture() -> some View {
+        self.onTapGesture {
+            // Don't remove, needed to allow gesture.
+        }.gesture(
             // Close keyboard on swipe down
             DragGesture(minimumDistance: 0, coordinateSpace: .local).onEnded({ gesture in
                 if gesture.translation.height > 0 {
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    self.closeKeyboard()
                 }
         }))
     }
-}
-
-public extension View {
-    func closeKeyboardGesture() -> some View {
-        modifier(CloseKeyboardGesture())
+    
+    func closeKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
