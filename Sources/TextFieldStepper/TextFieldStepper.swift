@@ -4,14 +4,23 @@ import SwiftUI
 public struct TextFieldStepper: View {
     @Binding var doubleValue: Double {
         didSet {
+            if doubleValue < config.minimum {
+                doubleValue = config.minimum
+            }
+
+            if doubleValue > config.maximum {
+                doubleValue = config.maximum
+            }
+            
             textValue = formatTextValue(doubleValue)
         }
     }
     
-    @State private var textValue: String = "0.0"
     @State private var keyboardOpened = false
     
     let config: TextFieldStepperConfig
+    
+    @State private var textValue: String = "0.0"
     
     public init(doubleValue: Binding<Double>, config: TextFieldStepperConfig = TextFieldStepperConfig()) {
         self._doubleValue = doubleValue
@@ -20,14 +29,24 @@ public struct TextFieldStepper: View {
     
     public var body: some View {
         HStack {
-            // Decrease
-            LongPressButton(
-                doubleValue: $doubleValue,
-                config: config,
-                button: config.decrementButton,
-                action: decrease
-            )
-            .disabled(doubleValue <= config.minimum || keyboardOpened)
+            if keyboardOpened {
+                Button(action: {
+                    print("Close Keyboard")
+                  }, label: {
+                    Image(systemName: "xmark.circle.fill").resizable()
+                          .aspectRatio(contentMode: .fit).foregroundColor(Color.red)
+                          
+                })
+                .frame(width: 35)
+            } else {
+                // Decrease
+                LongPressButton(
+                    doubleValue: $doubleValue,
+                    config: config,
+                    button: config.decrementButton,
+                    action: decrease
+                )
+            }
             
             VStack {
                 TextField("", text: $textValue) { editingChanged in
@@ -51,30 +70,35 @@ public struct TextFieldStepper: View {
             }
             
             // Increase
-            LongPressButton(
-                doubleValue: $doubleValue,
-                config: config,
-                button: config.incrementButton,
-                action: increase
-            )
-            .disabled(doubleValue >= config.maximum || keyboardOpened)
+            if keyboardOpened {
+                Button(action: {
+                    print("Close Keyboard")
+                  }, label: {
+                    Image(systemName: "checkmark.circle.fill").resizable()
+                          .aspectRatio(contentMode: .fit).foregroundColor(Color.green)
+                          
+                })
+                .frame(width: 35)
+            } else {
+                LongPressButton(
+                    doubleValue: $doubleValue,
+                    config: config,
+                    button: config.incrementButton,
+                    action: increase
+                )
+            }
+            
+            // DISABLED ISSUE WITH COLOR
         }
         .padding()
         .onAppear {
-            if doubleValue < config.minimum {
-                doubleValue = config.minimum
-            }
-            
-            if doubleValue > config.maximum {
-                doubleValue = config.maximum
-            }
-            
             textValue = formatTextValue(doubleValue)
         }
     }
 
     func decrease() {
         doubleValue = (doubleValue - config.increment) >= config.minimum ? doubleValue - config.increment : doubleValue
+        print("running decrease")
     }
     
     func increase() {
@@ -82,20 +106,20 @@ public struct TextFieldStepper: View {
     }
     
     func formatTextValue(_ value: Double) -> String {
-        return String(format: "%g", value) + config.unit
+        return String(format: "%.1f", value) + config.unit
     }
 
     func validateValue() {
         if textValue == "" || textValue == String(config.minimum) || Double(textValue) == nil || Double(textValue)! == config.minimum {
             // poorly formatted number, default to 0
             doubleValue = config.minimum
-            textValue = formatTextValue(config.minimum)
+            //textValue = formatTextValue(config.minimum)
         } else if (Double(textValue)!  > config.maximum) {
             doubleValue = config.maximum
-            textValue = formatTextValue(config.maximum)
+            //textValue = formatTextValue(config.maximum)
         } else if (Double(textValue)! < config.minimum) {
             doubleValue = config.minimum
-            textValue = formatTextValue(config.minimum)
+//            textValue = formatTextValue(config.minimum)
         } else {
             doubleValue = Double(textValue) ?? config.minimum
         }

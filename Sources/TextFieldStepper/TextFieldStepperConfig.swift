@@ -10,7 +10,7 @@ public struct TextFieldStepperConfig {
     let duration: Double
     let decrementButton: TextFieldStepperButton
     let incrementButton: TextFieldStepperButton
-    
+
     public init (
         label: String = "",
         unit: String = "",
@@ -19,9 +19,9 @@ public struct TextFieldStepperConfig {
         maximum: Double = 100.0,
         interval: Double = 0.05,
         duration: Double = 0.25,
-        decrementButton: TextFieldStepperButton = TextFieldStepperButton(image: Image(systemName: "minus.circle.fill"), color: Color.accentColor),
-        incrementButton: TextFieldStepperButton = TextFieldStepperButton(image: Image(systemName: "plus.circle.fill"), color: Color.accentColor)
-        
+        decrementButton: TextFieldStepperButton = TextFieldStepperButton(systemName: "minus.circle.fill"),
+        incrementButton: TextFieldStepperButton = TextFieldStepperButton(systemName: "plus.circle.fill")
+
     ) {
         self.label = label
         self.unit = unit

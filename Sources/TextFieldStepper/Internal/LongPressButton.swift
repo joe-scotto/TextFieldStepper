@@ -13,14 +13,13 @@ struct LongPressButton: View {
     var body: some View {
         Button(
             action: {
-                if !isLongPressing {
-                    action()
-                }
-                
-                invalidateLongPress()
+                !isLongPressing ? action() : invalidateLongPress()
             },
             label: {
-                button.image.resizable().aspectRatio(contentMode: .fit).foregroundColor(button.color)
+                button.image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .foregroundColor(button.color)
             }
         )
         .frame(height: 35)
