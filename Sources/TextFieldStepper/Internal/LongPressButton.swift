@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LongPressButton: View {
     @Binding var doubleValue: Double
+    @Binding var disabled: Bool
 
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
@@ -16,7 +17,7 @@ struct LongPressButton: View {
                 !isLongPressing ? action() : invalidateLongPress()
             },
             label: {
-                button.body
+                button.body.foregroundColor(disabled ? Color.gray : button.color).disabled(disabled)
             }
         )
         .simultaneousGesture(

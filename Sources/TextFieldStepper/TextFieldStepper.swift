@@ -19,6 +19,8 @@ public struct TextFieldStepper: View {
     @State private var keyboardOpened = false
     @State private var confirmEdit = false
     @State private var textValue: String = "0.0"
+    @State private var declineButtonDisabled = true
+    @State private var confirmButtonDisabled = false
     
     let config: TextFieldStepperConfig
     
@@ -28,7 +30,26 @@ public struct TextFieldStepper: View {
     }
     
     public var body: some View {
-        HStack {
+        let confirmButton = Group {
+            if keyboardOpened {
+                Button(action: {
+                    confirmEdit = true
+                    self.closeKeyboard()
+                  }, label: {
+                      config.confirmButton.body
+                          
+                })
+            } else {
+                LongPressButton(
+                    doubleValue: $doubleValue,
+                    disabled: $declineButtonDisabled,
+                    config: config,
+                    button: config.incrementButton,
+                    action: increase
+                )
+            }
+        }
+        let declineButton = Group {
             if keyboardOpened {
                 Button(action: {
                     confirmEdit = false
@@ -37,14 +58,19 @@ public struct TextFieldStepper: View {
                       config.declineButton.body
                 })
             } else {
-                // Decrease
                 LongPressButton(
                     doubleValue: $doubleValue,
+                    disabled: $confirmButtonDisabled,
                     config: config,
                     button: config.decrementButton,
                     action: decrease
                 )
+                .disabled(doubleValue <= config.minimum)
             }
+        }
+        
+        HStack {
+            declineButton
             
             VStack {
                 TextField("", text: $textValue) { editingChanged in
@@ -72,36 +98,31 @@ public struct TextFieldStepper: View {
                 }
             }
             
-            // Increase
-            if keyboardOpened {
-                Button(action: {
-                    confirmEdit = true
-                    self.closeKeyboard()
-                  }, label: {
-                      config.confirmButton.body
-                          
-                })
-            } else {
-                LongPressButton(
-                    doubleValue: $doubleValue,
-                    config: config,
-                    button: config.incrementButton,
-                    action: increase
-                )
-            }
-            
-            // DISABLED ISSUE WITH COLOR
+            confirmButton
         }
         .padding()
         .onAppear {
             textValue = formatTextValue(doubleValue)
         }
-        .closeKeyboardGesture()
+        .onTapGesture {
+            // Don't remove, needed to allow gesture for some reason...
+        }.gesture(
+            // Close keyboard on swipe down
+            DragGesture(minimumDistance: 0, coordinateSpace: .local).onEnded({ gesture in
+                if gesture.translation.height > 0 {
+                    confirmEdit = true
+                    closeKeyboard()
+                }
+            })
+        )
     }
-
+            
+    func closeKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+            
     func decrease() {
         doubleValue = (doubleValue - config.increment) >= config.minimum ? doubleValue - config.increment : doubleValue
-        print("running decrease")
     }
     
     func increase() {
