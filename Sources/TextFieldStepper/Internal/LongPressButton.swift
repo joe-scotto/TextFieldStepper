@@ -16,13 +16,9 @@ struct LongPressButton: View {
                 !isLongPressing ? action() : invalidateLongPress()
             },
             label: {
-                button.image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundColor(button.color)
+                button.body
             }
         )
-        .frame(height: 35)
         .simultaneousGesture(
             LongPressGesture(minimumDuration: config.duration).onEnded(startTimer)
         )

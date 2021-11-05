@@ -12,4 +12,11 @@ public struct TextFieldStepperButton {
     public init(systemName: String, color: Color = Color.accentColor) {
         self.init(image: Image(systemName: systemName), color: color)
     }
+    
+    var body: some View {
+        image.resizable()
+            .aspectRatio(contentMode: .fit)
+            .foregroundColor(color)
+            .frame(height: 35)
+    }
 }

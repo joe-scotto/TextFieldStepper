@@ -31,11 +31,10 @@ public struct TextFieldStepper: View {
         HStack {
             if keyboardOpened {
                 Button(action: {
-                    print("Close Keyboard")
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                   }, label: {
-                    Image(systemName: "xmark.circle.fill").resizable()
-                          .aspectRatio(contentMode: .fit).foregroundColor(Color.red)
-                          
+                   
+                      config.declineButton.body
                 })
                 .frame(width: 35)
             } else {
@@ -72,10 +71,9 @@ public struct TextFieldStepper: View {
             // Increase
             if keyboardOpened {
                 Button(action: {
-                    print("Close Keyboard")
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                   }, label: {
-                    Image(systemName: "checkmark.circle.fill").resizable()
-                          .aspectRatio(contentMode: .fit).foregroundColor(Color.green)
+                      config.confirmButton.body
                           
                 })
                 .frame(width: 35)
