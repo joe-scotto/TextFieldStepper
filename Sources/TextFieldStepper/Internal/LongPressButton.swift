@@ -32,12 +32,7 @@ struct LongPressButton: View {
     private func startTimer(_ value: LongPressGesture.Value) {
         isLongPressing = true
         timer = Timer.scheduledTimer(withTimeInterval: config.interval, repeats: true) { _ in
-            // FIXME: If 0.1 then minus button, overflows.
-            if (doubleValue > config.minimum && doubleValue < config.maximum) {
-                action()
-            } else {
-                invalidateLongPress()
-            }
+            (doubleValue > config.minimum && doubleValue < config.maximum) ? action() : invalidateLongPress()
         }
     }
 }

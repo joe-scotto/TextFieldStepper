@@ -19,6 +19,12 @@ public struct TextFieldStepper: View {
     @State private var keyboardOpened = false
     
     let config: TextFieldStepperConfig
+    @State private var buttonTapped = Buttons.decline
+    
+    enum Buttons {
+        case decline,
+             confirm
+    }
     
     @State private var textValue: String = "0.0"
     
@@ -31,12 +37,12 @@ public struct TextFieldStepper: View {
         HStack {
             if keyboardOpened {
                 Button(action: {
+                    buttonTapped = .decline
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                   }, label: {
                    
                       config.declineButton.body
                 })
-                .frame(width: 35)
             } else {
                 // Decrease
                 LongPressButton(
@@ -54,7 +60,12 @@ public struct TextFieldStepper: View {
                         textValue = textValue.replacingOccurrences(of: config.unit, with: "")
                     } else {
                         keyboardOpened = false
-                        validateValue()
+                        
+                        if buttonTapped == .decline {
+                            textValue = String(format: "%.1f", doubleValue) + "g"
+                        } else {
+                            validateValue()
+                        }
                     }
                 }
                 .multilineTextAlignment(.center)
@@ -71,12 +82,12 @@ public struct TextFieldStepper: View {
             // Increase
             if keyboardOpened {
                 Button(action: {
+                    buttonTapped = .confirm
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                   }, label: {
                       config.confirmButton.body
                           
                 })
-                .frame(width: 35)
             } else {
                 LongPressButton(
                     doubleValue: $doubleValue,
