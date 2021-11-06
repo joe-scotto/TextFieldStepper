@@ -8,10 +8,10 @@ public struct TextFieldStepperConfig {
     let maximum: Double
     let interval: Double
     let duration: Double
-    let decrementButton: TextFieldStepperButton
-    let incrementButton: TextFieldStepperButton
-    let declineButton: TextFieldStepperButton
-    let confirmButton: TextFieldStepperButton
+    let decrementImage: TextFieldStepperImage
+    let incrementImage: TextFieldStepperImage
+    let declineImage: TextFieldStepperImage
+    let confirmImage: TextFieldStepperImage
 
     public init (
         label: String = "",
@@ -21,10 +21,10 @@ public struct TextFieldStepperConfig {
         maximum: Double = 100.0,
         interval: Double = 0.05,
         duration: Double = 0.25,
-        decrementButton: TextFieldStepperButton = TextFieldStepperButton(systemName: "minus.circle.fill"),
-        incrementButton: TextFieldStepperButton = TextFieldStepperButton(systemName: "plus.circle.fill"),
-        declineButton: TextFieldStepperButton = TextFieldStepperButton(systemName: "xmark.circle.fill", color: Color.red),
-        confirmButton: TextFieldStepperButton = TextFieldStepperButton(systemName: "checkmark.circle.fill", color: Color.green)
+        decrementImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "minus.circle.fill"),
+        incrementImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "plus.circle.fill"),
+        declineImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "xmark.circle.fill", color: Color.red),
+        confirmImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "checkmark.circle.fill", color: Color.green)
 
     ) {
         self.label = label
@@ -34,9 +34,9 @@ public struct TextFieldStepperConfig {
         self.maximum = maximum
         self.interval = interval
         self.duration = duration
-        self.decrementButton = decrementButton
-        self.incrementButton = incrementButton
-        self.declineButton = declineButton
-        self.confirmButton = confirmButton
+        self.decrementImage = decrementImage
+        self.incrementImage = incrementImage
+        self.declineImage = declineImage
+        self.confirmImage = confirmImage
     }
 }

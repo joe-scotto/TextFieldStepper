@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct TextFieldStepperButton {
+public struct TextFieldStepperImage: View {
     let image: Image
     let color: Color
 
@@ -13,10 +13,10 @@ public struct TextFieldStepperButton {
         self.init(image: Image(systemName: systemName), color: color)
     }
     
-    var body: some View {
-        image.resizable()
+    public var body: some View {
+        image
+            .resizable()
             .aspectRatio(contentMode: .fit)
-            .foregroundColor(color)
             .frame(height: 35)
     }
 }

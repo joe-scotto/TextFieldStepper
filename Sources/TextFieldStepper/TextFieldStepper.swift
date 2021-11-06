@@ -19,58 +19,36 @@ public struct TextFieldStepper: View {
     @State private var keyboardOpened = false
     @State private var confirmEdit = false
     @State private var textValue: String = "0.0"
-    @State private var declineButtonDisabled = true
-    @State private var confirmButtonDisabled = false
     
     let config: TextFieldStepperConfig
     
     public init(doubleValue: Binding<Double>, config: TextFieldStepperConfig = TextFieldStepperConfig()) {
+        if doubleValue.wrappedValue > config.maximum || doubleValue.wrappedValue < config.minimum {
+            fatalError("TextFieldStepper: Double value is out of bounds")
+        }
+        
         self._doubleValue = doubleValue
         self.config = config
     }
     
     public var body: some View {
-        let confirmButton = Group {
-            if keyboardOpened {
-                Button(action: {
-                    confirmEdit = true
-                    self.closeKeyboard()
-                  }, label: {
-                      config.confirmButton.body
-                          
-                })
-            } else {
-                LongPressButton(
-                    doubleValue: $doubleValue,
-                    disabled: $declineButtonDisabled,
-                    config: config,
-                    button: config.incrementButton,
-                    action: increase
-                )
-            }
-        }
-        let declineButton = Group {
+        HStack {
             if keyboardOpened {
                 Button(action: {
                     confirmEdit = false
                     self.closeKeyboard()
                 }, label: {
-                      config.declineButton.body
+                    config.declineImage
                 })
             } else {
                 LongPressButton(
                     doubleValue: $doubleValue,
-                    disabled: $confirmButtonDisabled,
                     config: config,
-                    button: config.decrementButton,
+                    image: config.decrementImage,
                     action: decrease
                 )
                 .disabled(doubleValue <= config.minimum)
             }
-        }
-        
-        HStack {
-            declineButton
             
             VStack {
                 TextField("", text: $textValue) { editingChanged in
@@ -98,7 +76,22 @@ public struct TextFieldStepper: View {
                 }
             }
             
-            confirmButton
+            if keyboardOpened {
+                Button(action: {
+                    confirmEdit = true
+                    self.closeKeyboard()
+                  }, label: {
+                      config.confirmImage
+                })
+            } else {
+                LongPressButton(
+                    doubleValue: $doubleValue,
+                    config: config,
+                    image: config.incrementImage,
+                    action: increase
+                )
+                .disabled(doubleValue >= config.maximum)
+            }
         }
         .padding()
         .onAppear {
@@ -145,6 +138,9 @@ public struct TextFieldStepper: View {
             doubleValue = config.minimum
 //            textValue = formatTextValue(config.minimum)
         } else {
+            // ALWAYS HITTING HERE
+            
+            print("HIt")
             doubleValue = Double(textValue) ?? config.minimum
         }
     }

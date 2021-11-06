@@ -2,13 +2,12 @@ import SwiftUI
 
 struct LongPressButton: View {
     @Binding var doubleValue: Double
-    @Binding var disabled: Bool
 
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
 
     let config: TextFieldStepperConfig
-    let button: TextFieldStepperButton
+    let image: TextFieldStepperImage
     let action: () -> Void
     
     var body: some View {
@@ -17,7 +16,7 @@ struct LongPressButton: View {
                 !isLongPressing ? action() : invalidateLongPress()
             },
             label: {
-                button.body.foregroundColor(disabled ? Color.gray : button.color).disabled(disabled)
+                image
             }
         )
         .simultaneousGesture(
