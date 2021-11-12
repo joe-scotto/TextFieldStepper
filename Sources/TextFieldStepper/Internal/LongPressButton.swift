@@ -2,9 +2,10 @@ import SwiftUI
 
 struct LongPressButton: View {
     @Binding var doubleValue: Double
-
+    
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
+    
 
     let config: TextFieldStepperConfig
     let image: TextFieldStepperImage

@@ -4,26 +4,21 @@ import SwiftUI
 public struct TextFieldStepper: View {
     @Binding var doubleValue: Double {
         didSet {
-            if doubleValue < config.minimum {
-                doubleValue = config.minimum
-            }
-
-            if doubleValue > config.maximum {
-                doubleValue = config.maximum
-            }
-            
+            print(doubleValue)
             textValue = formatTextValue(doubleValue)
         }
     }
-    
+
     @State private var keyboardOpened = false
     @State private var confirmEdit = false
     @State private var textValue: String = "0.0"
     
+    @State private var decrementDisabled = false
+    
     let config: TextFieldStepperConfig
     
     public init(doubleValue: Binding<Double>, config: TextFieldStepperConfig = TextFieldStepperConfig()) {
-        if doubleValue.wrappedValue > config.maximum || doubleValue.wrappedValue < config.minimum {
+        if doubleValue.wrappedValue.roundedDecimal() > config.maximum || doubleValue.wrappedValue.roundedDecimal() < config.minimum {
             fatalError("TextFieldStepper: Double value is out of bounds")
         }
         
@@ -40,6 +35,7 @@ public struct TextFieldStepper: View {
                 }, label: {
                     config.declineImage
                 })
+                .foregroundColor(config.declineImage.color)
             } else {
                 LongPressButton(
                     doubleValue: $doubleValue,
@@ -47,7 +43,8 @@ public struct TextFieldStepper: View {
                     image: config.decrementImage,
                     action: decrease
                 )
-                .disabled(doubleValue <= config.minimum)
+                .foregroundColor(config.decrementImage.color)
+                .disabled(doubleValue.roundedDecimal() <= config.minimum)
             }
             
             VStack {
@@ -59,7 +56,7 @@ public struct TextFieldStepper: View {
                         keyboardOpened = false
                         
                         if !confirmEdit {
-                            textValue = String(format: "%.1f", doubleValue) + "g"
+//                            textValue = String(format: "%.1f", Double(doubleValue)) + "g"
                         } else {
                             validateValue()
                         }
@@ -83,6 +80,7 @@ public struct TextFieldStepper: View {
                   }, label: {
                       config.confirmImage
                 })
+                    .foregroundColor(config.confirmImage.color)
             } else {
                 LongPressButton(
                     doubleValue: $doubleValue,
@@ -90,7 +88,8 @@ public struct TextFieldStepper: View {
                     image: config.incrementImage,
                     action: increase
                 )
-                .disabled(doubleValue >= config.maximum)
+                .foregroundColor(config.incrementImage.color)
+                .disabled(doubleValue.roundedDecimal() >= config.maximum)
             }
         }
         .padding()
@@ -115,11 +114,13 @@ public struct TextFieldStepper: View {
     }
             
     func decrease() {
-        doubleValue = (doubleValue - config.increment) >= config.minimum ? doubleValue - config.increment : doubleValue
+//        doubleValue = (doubleValue - config.increment) >= config.minimum ? doubleValue - config.increment : doubleValue
+        doubleValue = doubleValue - config.increment
     }
     
     func increase() {
-        doubleValue = (doubleValue + config.increment) <= config.maximum ? doubleValue + config.increment : doubleValue
+//        doubleValue = (doubleValue + config.increment) <= config.maximum ? doubleValue + config.increment : doubleValue
+        doubleValue = doubleValue + config.increment
     }
     
     func formatTextValue(_ value: Double) -> String {
@@ -127,21 +128,26 @@ public struct TextFieldStepper: View {
     }
 
     func validateValue() {
-        if textValue == "" || textValue == String(config.minimum) || Double(textValue) == nil || Double(textValue)! == config.minimum {
-            // poorly formatted number, default to 0
-            doubleValue = config.minimum
-            //textValue = formatTextValue(config.minimum)
-        } else if (Double(textValue)!  > config.maximum) {
-            doubleValue = config.maximum
-            //textValue = formatTextValue(config.maximum)
-        } else if (Double(textValue)! < config.minimum) {
-            doubleValue = config.minimum
-//            textValue = formatTextValue(config.minimum)
-        } else {
-            // ALWAYS HITTING HERE
-            
-            print("HIt")
-            doubleValue = Double(textValue) ?? config.minimum
-        }
+        // 1. Must be able to convert to double without unit
+        // 2. Must be within and including minmum ... maximum
+        // 3. Must not be empty, otherwise cancel
+        
+        
+//        if textValue == "" || textValue == String(config.minimum) || Double(textValue) == nil || Double(textValue)! == config.minimum {
+//            // poorly formatted number, default to 0
+//            doubleValue = config.minimum
+//            //textValue = formatTextValue(config.minimum)
+//        } else if (Double(textValue)!  > config.maximum) {
+//            doubleValue = config.maximum
+//            //textValue = formatTextValue(config.maximum)
+//        } else if (Double(textValue)! < config.minimum) {
+//            doubleValue = config.minimum
+////            textValue = formatTextValue(config.minimum)
+//        } else {
+//            // ALWAYS HITTING HERE
+//            
+//            print("HIt")
+//            doubleValue = Double(textValue) ?? config.minimum
+//        }
     }
 }

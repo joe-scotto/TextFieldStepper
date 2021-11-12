@@ -22,3 +22,6 @@ If you wish to set different default values for each component, you have two opt
 
 # Keyboard issues....
 Keyboards are absolutely obnoxious in Swift... as of now, when the keyboard opens the user can either tap out or swipe down to dismiss it. The issue with this though is that any tap will still close the keyboard. I hope to implement a better method for this in version 2.1.0+ or 3.0.0+ something with a toolbar
+
+# FLOATING POINT ISSUES
+Valid for 3 decimal places, not the value itself but the way validation is handled with disabling based on min/max
