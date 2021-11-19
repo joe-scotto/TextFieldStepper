@@ -4,24 +4,42 @@ import SwiftUI
 public struct TextFieldStepper: View {
     @Binding var doubleValue: Double {
         didSet {
-            print(doubleValue)
+            print("Non-rounded: \(doubleValue) - Rounded: \(doubleValue.decimal)")
             textValue = formatTextValue(doubleValue)
         }
     }
-
+    
     @State private var keyboardOpened = false
     @State private var confirmEdit = false
     @State private var textValue: String = "0.0"
     
-    @State private var decrementDisabled = false
-    
     let config: TextFieldStepperConfig
     
-    public init(doubleValue: Binding<Double>, config: TextFieldStepperConfig = TextFieldStepperConfig()) {
-        if doubleValue.wrappedValue.roundedDecimal() > config.maximum || doubleValue.wrappedValue.roundedDecimal() < config.minimum {
-            fatalError("TextFieldStepper: Double value is out of bounds")
-        }
-        
+    /**
+     * init(doubleValue: Binding<Double>, config: TextFieldStepperConfig)
+     */
+    public init(
+        doubleValue: Binding<Double>,
+        config: TextFieldStepperConfig = TextFieldStepperConfig()
+    ) {
+        self._doubleValue = doubleValue
+        self.config = config
+    }
+    
+    /**
+     * init(doubleValue: Binding<Double>, unit: String, label: String, config: TextFieldStepperConfig)
+     */
+    public init(
+        doubleValue: Binding<Double>,
+        unit: String = "",
+        label: String = "",
+        config: TextFieldStepperConfig = TextFieldStepperConfig()
+    ) {
+        // Compose config
+        var config = config
+            config.unit = unit
+            config.label = label
+       
         self._doubleValue = doubleValue
         self.config = config
     }
@@ -44,7 +62,7 @@ public struct TextFieldStepper: View {
                     action: decrease
                 )
                 .foregroundColor(config.decrementImage.color)
-                .disabled(doubleValue.roundedDecimal() <= config.minimum)
+                .disabled(doubleValue.decimal <= config.minimum)
             }
             
             VStack {
@@ -56,7 +74,7 @@ public struct TextFieldStepper: View {
                         keyboardOpened = false
                         
                         if !confirmEdit {
-//                            textValue = String(format: "%.1f", Double(doubleValue)) + "g"
+                            textValue = String(format: "%.1f", Double(doubleValue)) + config.unit
                         } else {
                             validateValue()
                         }
@@ -88,12 +106,16 @@ public struct TextFieldStepper: View {
                     image: config.incrementImage,
                     action: increase
                 )
-                .foregroundColor(config.incrementImage.color)
-                .disabled(doubleValue.roundedDecimal() >= config.maximum)
+//                .foregroundColor(config.incrementImage.color)
+                    .disabled(doubleValue.decimal >= config.maximum)
             }
         }
         .padding()
         .onAppear {
+            if !(config.minimum...config.maximum).contains(doubleValue.decimal) {
+                fatalError("TextFieldStepper: Initial value not contained within constraints.")
+            }
+            
             textValue = formatTextValue(doubleValue)
         }
         .onTapGesture {
@@ -114,17 +136,17 @@ public struct TextFieldStepper: View {
     }
             
     func decrease() {
-//        doubleValue = (doubleValue - config.increment) >= config.minimum ? doubleValue - config.increment : doubleValue
-        doubleValue = doubleValue - config.increment
+//        print(doubleValue - config.increment)
+        doubleValue = (doubleValue - config.increment).decimal >= config.minimum ? doubleValue - config.increment : doubleValue
     }
     
     func increase() {
-//        doubleValue = (doubleValue + config.increment) <= config.maximum ? doubleValue + config.increment : doubleValue
-        doubleValue = doubleValue + config.increment
+//        print(doubleValue + config.increment)
+        doubleValue = (doubleValue + config.increment).decimal <= config.maximum ? doubleValue + config.increment : doubleValue
     }
     
     func formatTextValue(_ value: Double) -> String {
-        return String(format: "%.1f", value) + config.unit
+        return String(format: "%.1f", value.decimal) + config.unit
     }
 
     func validateValue() {
