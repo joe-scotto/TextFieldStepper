@@ -6,13 +6,18 @@ struct LongPressButton: View {
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
     
+    enum Actions {
+        case decrement,
+             increment
+    }
+    
     let config: TextFieldStepperConfig
     let image: TextFieldStepperImage
-    let action: () -> Void
+    let action: Actions
     
     var body: some View {
         Button(action: {
-            !isLongPressing ? action() : invalidateLongPress()
+            !isLongPressing ? updateDoubleValue() : invalidateLongPress()
         }) {
             image
         }
@@ -36,12 +41,29 @@ struct LongPressButton: View {
         isLongPressing = true
         timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
             // Perform action regardless of actual value
-            action()
+            updateDoubleValue()
             
             // If value after action is outside of constraints, stop long press
             if doubleValue.decimal <= config.minimum || doubleValue.decimal >= config.maximum {
                 invalidateLongPress()
             }
         }
+    }
+    
+    /**
+     * Decreases or increases the doubleValue
+     */
+    private func updateDoubleValue() {
+        var newValue: Double
+        
+        switch action {
+            case .decrement:
+                newValue = doubleValue - config.increment
+            case .increment:
+                newValue = doubleValue + config.increment
+        }
+        
+//        let newValue = sign(doubleValue, config.increment)
+        doubleValue = (config.minimum...config.maximum).contains(newValue.decimal) ? newValue : doubleValue
     }
 }

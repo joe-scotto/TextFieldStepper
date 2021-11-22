@@ -1,18 +1,13 @@
 import SwiftUI
 
-// TODO: Refactor... Long press and validation
 public struct TextFieldStepper: View {
-    @Binding var doubleValue: Double {
-        didSet {
-            textValue = formatTextValue(doubleValue)
-        }
-    }
+    @Binding var doubleValue: Double
     
     @State private var keyboardOpened = false
     @State private var confirmEdit = false
     @State private var textValue: String = "0.0"
     
-    let config: TextFieldStepperConfig
+    private let config: TextFieldStepperConfig
     
     /**
      * init(doubleValue: Binding<Double>, unit: String, label: String, config: TextFieldStepperConfig)
@@ -36,6 +31,9 @@ public struct TextFieldStepper: View {
         // Assign properties
         self._doubleValue = doubleValue
         self.config = config
+        
+        // Set text value with State
+        _textValue = State(initialValue: formatTextValue(doubleValue.wrappedValue))
     }
     
     public var body: some View {
@@ -44,16 +42,16 @@ public struct TextFieldStepper: View {
                 Button(action: {
                     confirmEdit = false
                     self.closeKeyboard()
-                }, label: {
+                }) {
                     config.declineImage
-                })
+                }
                 .foregroundColor(config.declineImage.color)
             } else {
                 LongPressButton(
                     doubleValue: $doubleValue,
                     config: config,
                     image: config.decrementImage,
-                    action: decrease
+                    action: .decrement
                 )
                 .foregroundColor(config.decrementImage.color)
                 .disabled(doubleValue.decimal <= config.minimum)
@@ -89,56 +87,32 @@ public struct TextFieldStepper: View {
                 Button(action: {
                     confirmEdit = true
                     self.closeKeyboard()
-                  }, label: {
-                      config.confirmImage
-                })
-                    .foregroundColor(config.confirmImage.color)
+                }) {
+                    config.confirmImage
+                }
+                .foregroundColor(config.confirmImage.color)
             } else {
                 LongPressButton(
                     doubleValue: $doubleValue,
                     config: config,
                     image: config.incrementImage,
-                    action: increase
+                    action: .increment
                 )
 //                .foregroundColor(config.incrementImage.color)
-                    .disabled(doubleValue.decimal >= config.maximum)
+                .disabled(doubleValue.decimal >= config.maximum)
             }
         }
-        .padding()
-        .onAppear {
-            if !(config.minimum...config.maximum).contains(doubleValue.decimal) {
-                fatalError("TextFieldStepper: Initial value not contained within constraints.")
-            }
-            
+        .onChange(of: doubleValue) { _ in
             textValue = formatTextValue(doubleValue)
         }
-        .onTapGesture {
-            // Don't remove, needed to allow gesture for some reason...
-        }.gesture(
-            // Close keyboard on swipe down
-            DragGesture(minimumDistance: 0, coordinateSpace: .local).onEnded({ gesture in
-                if gesture.translation.height > 0 {
-                    confirmEdit = true
-                    closeKeyboard()
-                }
-            })
-        )
     }
             
     func closeKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
-            
-    func decrease() {
-        doubleValue = (doubleValue - config.increment).decimal >= config.minimum ? doubleValue - config.increment : doubleValue
-    }
-    
-    func increase() {
-        doubleValue = (doubleValue + config.increment).decimal <= config.maximum ? doubleValue + config.increment : doubleValue
-    }
     
     func formatTextValue(_ value: Double) -> String {
-        return String(format: "%.2g", value.decimal) + config.unit
+        String(format: "%.2g", value.decimal) + config.unit
     }
 
     func validateValue() {

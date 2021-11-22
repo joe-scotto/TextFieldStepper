@@ -3,8 +3,8 @@
 A custom number component with both buttons and keyboard input. Essentially a custom implementation of the built-in `Stepper()` component. You can optionally long press the decrement or increment buttons to continue adding or decreasing until released.  
 
 # Platforms
-- iOS 13.0+
-- iPadOS 13.0+
+- iOS 14.0+
+- iPadOS 14.0+
 
 # Usage
 TextFieldStepper(
