@@ -6,20 +6,16 @@ struct LongPressButton: View {
     @State private var timer: Timer? = nil
     @State private var isLongPressing = false
     
-
     let config: TextFieldStepperConfig
     let image: TextFieldStepperImage
     let action: () -> Void
     
     var body: some View {
-        Button(
-            action: {
-                !isLongPressing ? action() : invalidateLongPress()
-            },
-            label: {
-                image
-            }
-        )
+        Button(action: {
+            !isLongPressing ? action() : invalidateLongPress()
+        }) {
+            image
+        }
         .simultaneousGesture(
             LongPressGesture(minimumDuration: 0.25).onEnded(startTimer)
         )

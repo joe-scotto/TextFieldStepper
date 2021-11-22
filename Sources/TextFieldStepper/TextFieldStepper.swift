@@ -4,7 +4,6 @@ import SwiftUI
 public struct TextFieldStepper: View {
     @Binding var doubleValue: Double {
         didSet {
-            print("Non-rounded: \(doubleValue) - Rounded: \(doubleValue.decimal)")
             textValue = formatTextValue(doubleValue)
         }
     }
@@ -16,30 +15,25 @@ public struct TextFieldStepper: View {
     let config: TextFieldStepperConfig
     
     /**
-     * init(doubleValue: Binding<Double>, config: TextFieldStepperConfig)
-     */
-    public init(
-        doubleValue: Binding<Double>,
-        config: TextFieldStepperConfig = TextFieldStepperConfig()
-    ) {
-        self._doubleValue = doubleValue
-        self.config = config
-    }
-    
-    /**
      * init(doubleValue: Binding<Double>, unit: String, label: String, config: TextFieldStepperConfig)
      */
     public init(
         doubleValue: Binding<Double>,
-        unit: String = "",
-        label: String = "",
+        unit: String? = nil,
+        label: String? = nil,
         config: TextFieldStepperConfig = TextFieldStepperConfig()
     ) {
+        // Confirm constraints
+        if !(config.minimum...config.maximum).contains(doubleValue.wrappedValue.decimal) {
+            fatalError("TextFieldStepper: Initial value outside of constraints.")
+        }
+        
         // Compose config
         var config = config
-            config.unit = unit
-            config.label = label
+            config.unit = unit ?? config.unit
+            config.label = label ?? config.label
        
+        // Assign properties
         self._doubleValue = doubleValue
         self.config = config
     }
@@ -136,17 +130,15 @@ public struct TextFieldStepper: View {
     }
             
     func decrease() {
-//        print(doubleValue - config.increment)
         doubleValue = (doubleValue - config.increment).decimal >= config.minimum ? doubleValue - config.increment : doubleValue
     }
     
     func increase() {
-//        print(doubleValue + config.increment)
         doubleValue = (doubleValue + config.increment).decimal <= config.maximum ? doubleValue + config.increment : doubleValue
     }
     
     func formatTextValue(_ value: Double) -> String {
-        return String(format: "%.1f", value.decimal) + config.unit
+        return String(format: "%.2g", value.decimal) + config.unit
     }
 
     func validateValue() {
