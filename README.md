@@ -15,19 +15,22 @@ TextFieldStepper(
 # Custom Configuration
 Sometimes you may want to use a different configuration than what is default, there are two methods of doing this depending on your application.
 1. Directly pass in a configuration object when creating an instance of the `TextFieldStepper`
-    1. let config = TextFieldStepperConfig(
-                label: String = "",
-                unit: String = "",
-                increment: Double = 0.1,
-                minimum: Double = 0.0,
-                maximum: Double = 100.0,
-                interval: Double = 0.05,
-                duration: Double = 0.25,
-                decrementImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "minus.circle.fill"),
-                incrementImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "plus.circle.fill"),
-                declineImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "xmark.circle.fill", color: Color.red),
-                confirmImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "checkmark.circle.fill", color: Color.green)
-            ) 
+    1.
+    ```
+    let config = TextFieldStepperConfig(
+        label: String = "",
+        unit: String = "",
+        increment: Double = 0.1,
+        minimum: Double = 0.0,
+        maximum: Double = 100.0,
+        interval: Double = 0.05,
+        duration: Double = 0.25,
+        decrementImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "minus.circle.fill"),
+        incrementImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "plus.circle.fill"),
+        declineImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "xmark.circle.fill", color: Color.red),
+        confirmImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "checkmark.circle.fill", color: Color.green)
+    )
+    ```
 2. Fork the repository and modify the `TextFieldStepperConfig.swift` file. This is useful if you want to completely change how the default `TextFieldStepper()` is created. 
 
 # Floating point
