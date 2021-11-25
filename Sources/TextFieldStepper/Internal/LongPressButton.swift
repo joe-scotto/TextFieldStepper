@@ -24,6 +24,8 @@ struct LongPressButton: View {
         .simultaneousGesture(
             LongPressGesture(minimumDuration: 0.25).onEnded(startTimer)
         )
+        .foregroundColor(!disableButton() ? image.color : config.disabledColor)
+        .disabled(disableButton())
     }
     
     /**
@@ -32,6 +34,22 @@ struct LongPressButton: View {
     private func invalidateLongPress() {
         isLongPressing = false
         timer?.invalidate()
+    }
+    
+    /**
+     * Check if button should be enabled or not based on the action
+     */
+    private func disableButton() -> Bool {
+        var shouldDisable = false
+        
+        switch action {
+            case .decrement:
+                shouldDisable = doubleValue.decimal <= config.minimum
+            case .increment:
+                shouldDisable = doubleValue.decimal >= config.maximum
+        }
+        
+        return shouldDisable
     }
     
     /**
@@ -63,7 +81,6 @@ struct LongPressButton: View {
                 newValue = doubleValue + config.increment
         }
         
-//        let newValue = sign(doubleValue, config.increment)
         doubleValue = (config.minimum...config.maximum).contains(newValue.decimal) ? newValue : doubleValue
     }
 }

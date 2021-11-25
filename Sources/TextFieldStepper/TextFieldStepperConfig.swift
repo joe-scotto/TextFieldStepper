@@ -10,6 +10,7 @@ public struct TextFieldStepperConfig {
     let incrementImage: TextFieldStepperImage
     let declineImage: TextFieldStepperImage
     let confirmImage: TextFieldStepperImage
+    let disabledColor: Color
 
     public init (
         label: String = "",
@@ -20,8 +21,8 @@ public struct TextFieldStepperConfig {
         decrementImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "minus.circle.fill"),
         incrementImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "plus.circle.fill"),
         declineImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "xmark.circle.fill", color: Color.red),
-        confirmImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "checkmark.circle.fill", color: Color.green)
-
+        confirmImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "checkmark.circle.fill", color: Color.green),
+        disabledColor: Color = Color(UIColor.lightGray)
     ) {
         self.label = label
         self.unit = unit
@@ -32,5 +33,7 @@ public struct TextFieldStepperConfig {
         self.incrementImage = incrementImage
         self.declineImage = declineImage
         self.confirmImage = confirmImage
+        self.disabledColor = disabledColor
+        // add min / max characters
     }
 }

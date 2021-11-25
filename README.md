@@ -28,10 +28,15 @@ Sometimes you may want to use a different configuration than what is default, th
         decrementImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "minus.circle.fill"),
         incrementImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "plus.circle.fill"),
         declineImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "xmark.circle.fill", color: Color.red),
-        confirmImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "checkmark.circle.fill", color: Color.green)
+        confirmImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "checkmark.circle.fill", color: Color.green),
+        disabledColor: Color = Color(UIColor.lightGray)
     )
     ```
 2. Fork the repository and modify the `TextFieldStepperConfig.swift` file. This is useful if you want to completely change how the default `TextFieldStepper()` is created. 
 
 # Floating point
 The data type that is used for TextFieldStepper is a `Double`. The value itself is never modified when passed through but the comparison value for the `config.minimum` and `config.maximum` is rounded to 8 decimal places. This is to prevent issues with floating point values such as repeating decimals and unexpected comparisons. I have tested most scenarios and you shouldn't have to worry about this but if you encounter an issue where the decrement or increment button is not disabling when you expect it to, floating point is probably to blame. I just wanted to put this out there as a bit of a warning in case something does come up.
+
+
+# Notes for final README.md
+1. Accent color is used by default for the button color, red/green for confirm text input. Can be overridden with `TextFieldStepperImage()`

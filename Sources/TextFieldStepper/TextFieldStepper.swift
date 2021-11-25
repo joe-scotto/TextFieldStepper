@@ -53,20 +53,20 @@ public struct TextFieldStepper: View {
                     image: config.decrementImage,
                     action: .decrement
                 )
-                .foregroundColor(config.decrementImage.color)
-                .disabled(doubleValue.decimal <= config.minimum)
             }
             
             VStack {
                 TextField("", text: $textValue) { editingChanged in
                     if editingChanged {
+                        // Keyboard opened, editing started
                         keyboardOpened = true
                         textValue = textValue.replacingOccurrences(of: config.unit, with: "")
                     } else {
                         keyboardOpened = false
                         
+                        // Check which button was pressed
                         if !confirmEdit {
-                            textValue = String(format: "%.1f", Double(doubleValue)) + config.unit
+                            textValue = formatTextValue(doubleValue)
                         } else {
                             validateValue()
                         }
@@ -98,11 +98,11 @@ public struct TextFieldStepper: View {
                     image: config.incrementImage,
                     action: .increment
                 )
-//                .foregroundColor(config.incrementImage.color)
-                .disabled(doubleValue.decimal >= config.maximum)
             }
         }
         .onChange(of: doubleValue) { _ in
+            
+            // Min and max characters
             textValue = formatTextValue(doubleValue)
         }
     }
@@ -112,28 +112,55 @@ public struct TextFieldStepper: View {
     }
     
     func formatTextValue(_ value: Double) -> String {
-        String(format: "%.2g", value.decimal) + config.unit
+        String(format: "%g", value.decimal) + config.unit
+    }
+    
+    func setToMaximum() {
+        doubleValue = config.maximum
+        textValue = formatTextValue(config.maximum)
     }
 
+    func setToMinimum() {
+        doubleValue = config.minimum
+        textValue = formatTextValue(config.minimum)
+    }
+    
     func validateValue() {
-        // 1. Must be able to convert to double without unit
-        // 2. Must be within and including minmum ... maximum
-        // 3. Must not be empty, otherwise cancel
+        if textValue.isEmpty {
+            setToMinimum()
+            return
+        }
+        
+        if let textToDouble = Double(textValue) {
+            if textToDouble.decimal < config.minimum {
+                setToMinimum()
+                return
+            }
+            
+            if textToDouble.decimal > config.maximum {
+                setToMaximum()
+                return
+            }
+        }
+        
+        doubleValue = Double(textValue)!
+     
+        
+//         1. Must be able to convert to double without unit
+//         2. Must be within and including minmum ... maximum
+//         3. Must not be empty, otherwise cancel
         
         
 //        if textValue == "" || textValue == String(config.minimum) || Double(textValue) == nil || Double(textValue)! == config.minimum {
 //            // poorly formatted number, default to 0
-//            doubleValue = config.minimum
-//            //textValue = formatTextValue(config.minimum)
+//            textValue = formatTextValue(config.minimum)
 //        } else if (Double(textValue)!  > config.maximum) {
-//            doubleValue = config.maximum
-//            //textValue = formatTextValue(config.maximum)
+//            textValue = formatTextValue(config.maximum)
 //        } else if (Double(textValue)! < config.minimum) {
-//            doubleValue = config.minimum
-////            textValue = formatTextValue(config.minimum)
+//            textValue = formatTextValue(config.minimum)
 //        } else {
 //            // ALWAYS HITTING HERE
-//            
+//
 //            print("HIt")
 //            doubleValue = Double(textValue) ?? config.minimum
 //        }
