@@ -141,28 +141,8 @@ public struct TextFieldStepper: View {
                 setToMaximum()
                 return
             }
+            
+            doubleValue = textToDouble
         }
-        
-        doubleValue = Double(textValue)!
-     
-        
-//         1. Must be able to convert to double without unit
-//         2. Must be within and including minmum ... maximum
-//         3. Must not be empty, otherwise cancel
-        
-        
-//        if textValue == "" || textValue == String(config.minimum) || Double(textValue) == nil || Double(textValue)! == config.minimum {
-//            // poorly formatted number, default to 0
-//            textValue = formatTextValue(config.minimum)
-//        } else if (Double(textValue)!  > config.maximum) {
-//            textValue = formatTextValue(config.maximum)
-//        } else if (Double(textValue)! < config.minimum) {
-//            textValue = formatTextValue(config.minimum)
-//        } else {
-//            // ALWAYS HITTING HERE
-//
-//            print("HIt")
-//            doubleValue = Double(textValue) ?? config.minimum
-//        }
     }
 }
