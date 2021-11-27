@@ -5,7 +5,8 @@ public struct TextFieldStepper: View {
     
     @State private var keyboardOpened = false
     @State private var confirmEdit = false
-    @State private var textValue: String = "0.0"
+    @State private var textValue = ""
+    @State private var showAlert = false
     
     private let config: TextFieldStepperConfig
     
@@ -19,9 +20,9 @@ public struct TextFieldStepper: View {
         config: TextFieldStepperConfig = TextFieldStepperConfig()
     ) {
         // Confirm constraints
-        if !(config.minimum...config.maximum).contains(doubleValue.wrappedValue.decimal) {
-            fatalError("TextFieldStepper: Initial value outside of constraints.")
-        }
+//        if !(config.minimum...config.maximum).contains(doubleValue.wrappedValue.decimal) {
+//            fatalError("TextFieldStepper: Initial value outside of constraints.")
+//        }
         
         // Compose config
         var config = config
@@ -66,8 +67,10 @@ public struct TextFieldStepper: View {
                         
                         // Check which button was pressed
                         if !confirmEdit {
+                            // Declined to save, keep old value
                             textValue = formatTextValue(doubleValue)
                         } else {
+                            // Saved, format value
                             validateValue()
                         }
                     }
@@ -76,7 +79,7 @@ public struct TextFieldStepper: View {
                 .font(.system(size: 24, weight: .black))
                 .keyboardType(.decimalPad)
                 
-                if config.label != "" {
+                if !config.label.isEmpty {
                     Text(config.label)
                         .font(.footnote)
                         .fontWeight(.light)
@@ -101,9 +104,13 @@ public struct TextFieldStepper: View {
             }
         }
         .onChange(of: doubleValue) { _ in
-            
-            // Min and max characters
             textValue = formatTextValue(doubleValue)
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("Input issue"),
+                message: Text("Please input a valid number")
+            )
         }
     }
             
@@ -115,34 +122,33 @@ public struct TextFieldStepper: View {
         String(format: "%g", value.decimal) + config.unit
     }
     
-    func setToMaximum() {
-        doubleValue = config.maximum
-        textValue = formatTextValue(config.maximum)
-    }
-
-    func setToMinimum() {
-        doubleValue = config.minimum
-        textValue = formatTextValue(config.minimum)
-    }
-    
     func validateValue() {
-        if textValue.isEmpty {
-            setToMinimum()
-            return
-        }
+        /**
+         * - Keyboard should remain open until error has been resolved or user cancels
+         * - Alert message and title changes based on the error
+         * - doubleValue is only updated when all error conditions are satisfied
+         *
+         * 1. Cut decimal after 8 places automatically
+         * 2. If more than one decimal, throw Alert
+         * 3. If contains characters, throw Alert (hardware keyboard issue)
+         * 4. If doubleValue is less than config.minimum, throw Alert
+         * 5. If doubleValue is greater than config.maximum, throw Alert
+         * 6. If doubleValue is empty, throw Alert
+         */
         
-        if let textToDouble = Double(textValue) {
+        if var textToDouble = Double(textValue) {
             if textToDouble.decimal < config.minimum {
-                setToMinimum()
-                return
+//                showAlert = true
             }
             
             if textToDouble.decimal > config.maximum {
-                setToMaximum()
-                return
+//                textToDouble = config.maximum
+//                showAlert = true
             }
             
             doubleValue = textToDouble
+        } else {
+            doubleValue = config.minimum
         }
     }
 }
