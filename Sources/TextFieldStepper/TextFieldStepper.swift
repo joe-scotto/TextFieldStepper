@@ -7,8 +7,46 @@ public struct TextFieldStepper: View {
     @State private var confirmEdit = false
     @State private var textValue = ""
     @State private var showAlert = false
+    @State private var alert: Alert? = nil
     
     private let config: TextFieldStepperConfig
+    
+    private var cancelButton: some View {
+        Button(action: {
+            textValue = formatTextValue(doubleValue)
+            closeKeyboard()
+        }) {
+            config.declineImage
+        }
+        .foregroundColor(config.declineImage.color)
+    }
+    
+    private var confirmButton: some View {
+        Button(action: {
+            validateValue()
+        }) {
+            config.confirmImage
+        }
+        .foregroundColor(config.confirmImage.color)
+    }
+    
+    private var decrementButton: some View {
+        LongPressButton(
+            doubleValue: $doubleValue,
+            config: config,
+            image: config.decrementImage,
+            action: .decrement
+        )
+    }
+    
+    private var incrementButton: some View {
+        LongPressButton(
+            doubleValue: $doubleValue,
+            config: config,
+            image: config.incrementImage,
+            action: .increment
+        )
+    }
     
     /**
      * init(doubleValue: Binding<Double>, unit: String, label: String, config: TextFieldStepperConfig)
@@ -19,11 +57,12 @@ public struct TextFieldStepper: View {
         label: String? = nil,
         config: TextFieldStepperConfig = TextFieldStepperConfig()
     ) {
+        
         // Confirm constraints
 //        if !(config.minimum...config.maximum).contains(doubleValue.wrappedValue.decimal) {
-//            fatalError("TextFieldStepper: Initial value outside of constraints.")
+//            fatalError("TextFieldStepper: Value outside of constraints.")
 //        }
-        
+         
         // Compose config
         var config = config
             config.unit = unit ?? config.unit
@@ -39,21 +78,11 @@ public struct TextFieldStepper: View {
     
     public var body: some View {
         HStack {
+            // Left button
             if keyboardOpened {
-                Button(action: {
-                    confirmEdit = false
-                    self.closeKeyboard()
-                }) {
-                    config.declineImage
-                }
-                .foregroundColor(config.declineImage.color)
+                cancelButton
             } else {
-                LongPressButton(
-                    doubleValue: $doubleValue,
-                    config: config,
-                    image: config.decrementImage,
-                    action: .decrement
-                )
+                decrementButton
             }
             
             VStack {
@@ -63,15 +92,8 @@ public struct TextFieldStepper: View {
                         keyboardOpened = true
                         textValue = textValue.replacingOccurrences(of: config.unit, with: "")
                     } else {
-                        keyboardOpened = false
-                        
-                        // Check which button was pressed
-                        if !confirmEdit {
-                            // Declined to save, keep old value
-                            textValue = formatTextValue(doubleValue)
-                        } else {
-                            // Saved, format value
-                            validateValue()
+                        if validateValue() {
+                            keyboardOpened = false
                         }
                     }
                 }
@@ -86,31 +108,20 @@ public struct TextFieldStepper: View {
                 }
             }
             
+            // Right button
             if keyboardOpened {
-                Button(action: {
-                    confirmEdit = true
-                    self.closeKeyboard()
-                }) {
-                    config.confirmImage
-                }
-                .foregroundColor(config.confirmImage.color)
+                confirmButton
             } else {
-                LongPressButton(
-                    doubleValue: $doubleValue,
-                    config: config,
-                    image: config.incrementImage,
-                    action: .increment
-                )
+                incrementButton
             }
         }
         .onChange(of: doubleValue) { _ in
+            // Should validate here also just as a double check
+            
             textValue = formatTextValue(doubleValue)
         }
         .alert(isPresented: $showAlert) {
-            Alert(
-                title: Text("Input issue"),
-                message: Text("Please input a valid number")
-            )
+            alert!
         }
     }
             
@@ -122,33 +133,47 @@ public struct TextFieldStepper: View {
         String(format: "%g", value.decimal) + config.unit
     }
     
-    func validateValue() {
-        /**
-         * - Keyboard should remain open until error has been resolved or user cancels
-         * - Alert message and title changes based on the error
-         * - doubleValue is only updated when all error conditions are satisfied
-         *
-         * 1. Cut decimal after 8 places automatically
-         * 2. If more than one decimal, throw Alert
-         * 3. If contains characters, throw Alert (hardware keyboard issue)
-         * 4. If doubleValue is less than config.minimum, throw Alert
-         * 5. If doubleValue is greater than config.maximum, throw Alert
-         * 6. If doubleValue is empty, throw Alert
-         */
+    func validateValue() -> Bool {
+        // Reset alert status
+        showAlert = false
         
-        if var textToDouble = Double(textValue) {
+        // Confirm doubleValue is actually a Double
+        if let textToDouble = Double(textValue) {
+            // 4. If doubleValue is less than config.minimum, throw Alert
+            // 5. If doubleValue is greater than config.maximum, throw Alert
             if textToDouble.decimal < config.minimum {
-//                showAlert = true
+                showAlert = true
+                alert = Alert(
+                    title: Text("Too small!"),
+                    message: Text("Number must be at least \(String(format: "%g", config.minimum.decimal)).")
+                )
+                
             }
             
             if textToDouble.decimal > config.maximum {
-//                textToDouble = config.maximum
-//                showAlert = true
+                showAlert = true
+                alert = Alert(
+                    title: Text("Too large!"),
+                    message: Text("Number must be at most \(String(format: "%g", config.maximum.decimal)).")
+                )
             }
             
-            doubleValue = textToDouble
+            // If all checks pass, set doubleValue
+            if !showAlert {
+                doubleValue = textToDouble
+                closeKeyboard()
+            }
         } else {
-            doubleValue = config.minimum
+            // 2. If more than one decimal, throw Alert
+            // 3. If contains characters, throw Alert (hardware keyboard issue)
+            // 6. If doubleValue is empty, throw Alert
+            showAlert = true
+            alert = Alert(
+                title: Text("Whoops!"),
+                message: Text("Please enter a valid number.")
+            )
         }
+        
+        return !showAlert
     }
 }

@@ -34,6 +34,5 @@ public struct TextFieldStepperConfig {
         self.declineImage = declineImage
         self.confirmImage = confirmImage
         self.disabledColor = disabledColor
-        // add min / max characters
     }
 }
