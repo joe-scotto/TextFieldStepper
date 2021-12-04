@@ -42,8 +42,8 @@ The default parameters should be fine for most situations but there are certainl
     ```
 2. If you want to modify the default way in which every instance of `TextFieldStepper` is created, fork this repository and modify the configuration within [TextFieldStepperConfig.swift](https://github.com/joe-scotto/TextFieldStepper/blob/main/Sources/TextFieldStepper/TextFieldStepperConfig.swift).
 
-# Defaults
-`TextFieldStepper` will utilize the applications `accentColor`, `Color.red`, and `Color.green` for the buttons. You are able to override this by utilizing a custom configuration as mentioned before.
+# Styling
+`TextFieldStepper` will utilize `Color.accentColor`, `Color.red`, and `Color.green` for the buttons. You are able to override this by utilizing a custom configuration. You can also pass through either a system named image string or your own `Image` if you do not like the defaults.
 
 # Floating point
 `TextFieldStepper` uses `Double` which of course can sometimes cause issues in regards to floating-point. The component itself does not ever modify the actual value that is passed through however for comparison checks on the minimum and maximum value, the double will be rounded to 8 decimal places. This shouldn't be an issue but I just wanted to mention it in case something comes up.
