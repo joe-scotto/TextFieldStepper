@@ -57,12 +57,6 @@ public struct TextFieldStepper: View {
         label: String? = nil,
         config: TextFieldStepperConfig = TextFieldStepperConfig()
     ) {
-        
-        // Confirm constraints
-//        if !(config.minimum...config.maximum).contains(doubleValue.wrappedValue.decimal) {
-//            fatalError("TextFieldStepper: Value outside of constraints.")
-//        }
-         
         // Compose config
         var config = config
             config.unit = unit ?? config.unit
@@ -145,7 +139,7 @@ public struct TextFieldStepper: View {
                 showAlert = true
                 alert = Alert(
                     title: Text("Too small!"),
-                    message: Text("Number must be at least \(String(format: "%g", config.minimum.decimal)).")
+                    message: Text("\(config.label) must be at least \(formatTextValue(config.minimum)).")
                 )
                 
             }
@@ -154,7 +148,7 @@ public struct TextFieldStepper: View {
                 showAlert = true
                 alert = Alert(
                     title: Text("Too large!"),
-                    message: Text("Number must be at most \(String(format: "%g", config.maximum.decimal)).")
+                    message: Text("\(config.label) must be at most \(formatTextValue(config.maximum)).")
                 )
             }
             
@@ -170,7 +164,7 @@ public struct TextFieldStepper: View {
             showAlert = true
             alert = Alert(
                 title: Text("Whoops!"),
-                message: Text("Please enter a valid number.")
+                message: Text("\(config.label) must contain a valid number.")
             )
         }
         
