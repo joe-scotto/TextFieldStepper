@@ -1,8 +1,8 @@
 import SwiftUI
 
 public struct TextFieldStepperConfig {
-    var label: String
     var unit: String
+    var label: String
     let increment: Double
     let minimum: Double
     let maximum: Double
@@ -13,8 +13,8 @@ public struct TextFieldStepperConfig {
     let disabledColor: Color
 
     public init (
-        label: String = "",
         unit: String = "",
+        label: String = "",
         increment: Double = 0.1,
         minimum: Double = 0.0,
         maximum: Double = 100.0,
@@ -24,8 +24,8 @@ public struct TextFieldStepperConfig {
         confirmImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "checkmark.circle.fill", color: Color.green),
         disabledColor: Color = Color(UIColor.lightGray)
     ) {
-        self.label = label
         self.unit = unit
+        self.label = label
         self.increment = increment
         self.minimum = minimum
         self.maximum = maximum

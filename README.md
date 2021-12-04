@@ -1,42 +1,47 @@
-
 # TextFieldStepper
-A custom number component with both buttons and keyboard input. Essentially a custom implementation of the built-in `Stepper()` component. You can optionally long press the decrement or increment buttons to continue adding or decreasing until released.  
+Essentially a custom implementation of the built-in SwiftUI `Stepper` component. Unlike it's counterpart, the value of a `TextFieldStepper` component can be changed using either the on-screen buttons or the keyboard. By default the component will use the applications `accentColor` in order to stylize the buttons.
 
 # Platforms
-- iOS 14.0+
-- iPadOS 14.0+
+- iOS (14.0+)
+- iPadOS (14.0+)
 
 # Usage
-TextFieldStepper(
-    double: Binding<Double>), 
-    config: TextFieldStepperConfig? = TextFieldStepperConfig()
-)
+Creating a `TextFieldStepper` is simple.
+``` swift
+struct ContentView: View {
+    @State private var butter = 0.0
+
+    var body: some View {
+        TextFieldStepper(
+            doubleValue: $butter, 
+            unit: "oz", 
+            label: "Butter"
+        )
+    }
+}
+```
 
 # Custom Configuration
-Sometimes you may want to use a different configuration than what is default, there are two methods of doing this depending on your application.
-1. Directly pass in a configuration object when creating an instance of the `TextFieldStepper`
-    1.
+The default parameters should be fine for most situations but there are certainly cases where they won't be. There are two methods, that will allow you to change some of these parameters.
+
+1. If you just want to modify a single component, you can simply pass in a `TextFieldStepperConfig` when creating it. You can see a full list of available configuration parameters in [TextFieldStepperConfig.swift](https://github.com/joe-scotto/TextFieldStepper/blob/main/Sources/TextFieldStepper/TextFieldStepperConfig.swift).
+    
+    ``` swift
+    struct ContentView: View {
+        @State private var butter = 0.0
+        
+        let config = TextFieldStepperConfig(
+            unit: "oz",
+            label: "Butter"
+        )
+
+        var body: some View {
+            TextFieldStepper(doubleValue: $butter, config: config)
+        }
+    }
     ```
-    let config = TextFieldStepperConfig(
-        label: String = "",
-        unit: String = "",
-        increment: Double = 0.1,
-        minimum: Double = 0.0,
-        maximum: Double = 100.0,
-        interval: Double = 0.05,
-        duration: Double = 0.25,
-        decrementImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "minus.circle.fill"),
-        incrementImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "plus.circle.fill"),
-        declineImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "xmark.circle.fill", color: Color.red),
-        confirmImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "checkmark.circle.fill", color: Color.green),
-        disabledColor: Color = Color(UIColor.lightGray)
-    )
-    ```
-2. Fork the repository and modify the `TextFieldStepperConfig.swift` file. This is useful if you want to completely change how the default `TextFieldStepper()` is created. 
+2. If you want to modify the default way in which every instance of `TextFieldStepper` is created, fork this repository and modify the configuration within [TextFieldStepperConfig.swift](https://github.com/joe-scotto/TextFieldStepper/blob/main/Sources/TextFieldStepper/TextFieldStepperConfig.swift).
 
 # Floating point
-The data type that is used for TextFieldStepper is a `Double`. The value itself is never modified when passed through but the comparison value for the `config.minimum` and `config.maximum` is rounded to 8 decimal places. This is to prevent issues with floating point values such as repeating decimals and unexpected comparisons. I have tested most scenarios and you shouldn't have to worry about this but if you encounter an issue where the decrement or increment button is not disabling when you expect it to, floating point is probably to blame. I just wanted to put this out there as a bit of a warning in case something does come up.
+`TextFieldStepper` uses `Double` which of course can sometimes cause issues in regards to floating-point. The component itself does not ever modify the actual value that is passed through however for comparison checks on the minimum and maximum value, the double will be rounded to 8 decimal places. This shouldn't be an issue but I just wanted to mention it in case something comes up.
 
-
-# Notes for final README.md
-1. Accent color is used by default for the button color, red/green for confirm text input. Can be overridden with `TextFieldStepperImage()`
