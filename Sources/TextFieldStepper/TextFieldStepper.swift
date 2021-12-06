@@ -91,7 +91,7 @@ public struct TextFieldStepper: View {
                         keyboardOpened = false
                         
                         // Detect cancel button
-                        if !cancelled {
+                        if cancelled {
                             self.cancelled = false
                             return
                         }
