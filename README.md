@@ -1,5 +1,5 @@
 # TextFieldStepper
-Essentially a custom implementation of the built-in SwiftUI `Stepper` component. Unlike it's counterpart, the value of a `TextFieldStepper` component can be changed using either the on-screen buttons or the keyboard. By default the component will use the applications `accentColor` in order to stylize the buttons.
+Essentially a custom implementation of the built-in SwiftUI `Stepper` component. Unlike it's counterpart, the value of a `TextFieldStepper` component can be changed using either the on-screen buttons or the keyboard. The component also implements a long press action where if you hold the button longer than 0.25 seconds, it will continue incrementing or decrementing until you release.
 
 # Platforms
 - iOS (14.0+)
@@ -42,6 +42,20 @@ The default parameters should be fine for most situations but there are certainl
     ```
 2. If you want to modify the default way in which every instance of `TextFieldStepper` is created, fork this repository and modify the configuration within [TextFieldStepperConfig.swift](https://github.com/joe-scotto/TextFieldStepper/blob/main/Sources/TextFieldStepper/TextFieldStepperConfig.swift).
 
+# Styling
+`TextFieldStepper` will utilize `Color.accentColor`, `Color.red`, and `Color.green` for the buttons. You are able to override this by utilizing a custom configuration. You can also pass through either a system named image string or your own `Image` if you do not like the defaults.
+
 # Floating point
 `TextFieldStepper` uses `Double` which of course can sometimes cause issues in regards to floating-point. The component itself does not ever modify the actual value that is passed through however for comparison checks on the minimum and maximum value, the double will be rounded to 8 decimal places. This shouldn't be an issue but I just wanted to mention it in case something comes up.
+
+# License
+MIT License
+
+Copyright (c) 2021 Joe Scotto
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
