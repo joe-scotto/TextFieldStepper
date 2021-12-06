@@ -7,6 +7,7 @@ public struct TextFieldStepper: View {
     @State private var confirmEdit = false
     @State private var textValue = ""
     @State private var showAlert = false
+    @State private var cancelled = false
     @State private var alert: Alert? = nil
     
     private let config: TextFieldStepperConfig
@@ -14,6 +15,7 @@ public struct TextFieldStepper: View {
     private var cancelButton: some View {
         Button(action: {
             textValue = formatTextValue(doubleValue)
+            cancelled = true
             closeKeyboard()
         }) {
             config.declineImage
@@ -86,9 +88,15 @@ public struct TextFieldStepper: View {
                         keyboardOpened = true
                         textValue = textValue.replacingOccurrences(of: config.unit, with: "")
                     } else {
-                        if validateValue() {
-                            keyboardOpened = false
+                        keyboardOpened = false
+                        
+                        // Detect cancel button
+                        if !cancelled {
+                            self.cancelled = false
+                            return
                         }
+                        
+                        validateValue()
                     }
                 }
                 .multilineTextAlignment(.center)
@@ -127,7 +135,7 @@ public struct TextFieldStepper: View {
         String(format: "%g", value.decimal) + config.unit
     }
     
-    func validateValue() -> Bool {
+    func validateValue() {
         // Reset alert status
         showAlert = false
         
@@ -167,7 +175,5 @@ public struct TextFieldStepper: View {
                 message: Text("\(config.label) must contain a valid number.")
             )
         }
-        
-        return !showAlert
     }
 }
