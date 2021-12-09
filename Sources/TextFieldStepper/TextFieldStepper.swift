@@ -50,10 +50,6 @@ public struct TextFieldStepper: View {
         )
     }
     
-    
-    
-    
-    
     /**
      * init(doubleValue: Binding<Double>, unit: String, label: String, config: TextFieldStepperConfig)
      */
@@ -94,11 +90,12 @@ public struct TextFieldStepper: View {
     
     public var body: some View {
         HStack {
-            // Left button
-            if keyboardOpened {
-                cancelButton
-            } else {
-                decrementButton
+            ZStack {
+                decrementButton.opacity(keyboardOpened ? 0 : 1)
+                
+                if keyboardOpened {
+                    cancelButton
+                }
             }
             
             VStack(spacing: 0) {
@@ -131,10 +128,12 @@ public struct TextFieldStepper: View {
             }
             
             // Right button
-            if keyboardOpened {
-                confirmButton
-            } else {
-                incrementButton
+            ZStack {
+                incrementButton.opacity(keyboardOpened ? 0 : 1)
+                
+                if keyboardOpened {
+                    confirmButton
+                }
             }
         }
         .onChange(of: doubleValue) { _ in
