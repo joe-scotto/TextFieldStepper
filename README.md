@@ -1,6 +1,6 @@
 # TextFieldStepper
 ![gh](https://user-images.githubusercontent.com/8194147/145436007-1338579a-abc3-448c-b3f7-066daf6db306.gif)
-A SwiftUI component to make inputting numbers simpler than the native `Stepper` component. In addition to increment and decrement buttons, the user can tap the number to change it using the keyboard or long press one of the buttons to continue running the action until released.
+A SwiftUI component to make inputting numbers easier than the native `Stepper` component. In addition to increment and decrement buttons, the user can tap the number to change it using the keyboard or long press one of the buttons to continue running the action until released.
 
 # Platforms
 Tested on iOS 15.0 but should work on both iOS and iPadOS 14 and up.
