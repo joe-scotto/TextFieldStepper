@@ -101,7 +101,7 @@ public struct TextFieldStepper: View {
                 decrementButton
             }
             
-            VStack {
+            VStack(spacing: 0) {
                 TextField("", text: $textValue) { editingChanged in
                     if editingChanged {
                         // Keyboard opened, editing started
