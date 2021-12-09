@@ -3,14 +3,14 @@ import SwiftUI
 public struct TextFieldStepperConfig {
     var unit: String
     var label: String
-    let increment: Double
-    let minimum: Double
-    let maximum: Double
-    let decrementImage: TextFieldStepperImage
-    let incrementImage: TextFieldStepperImage
-    let declineImage: TextFieldStepperImage
-    let confirmImage: TextFieldStepperImage
-    let disabledColor: Color
+    var increment: Double
+    var minimum: Double
+    var maximum: Double
+    var decrementImage: TextFieldStepperImage
+    var incrementImage: TextFieldStepperImage
+    var declineImage: TextFieldStepperImage
+    var confirmImage: TextFieldStepperImage
+    var disabledColor: Color
 
     public init (
         unit: String = "",

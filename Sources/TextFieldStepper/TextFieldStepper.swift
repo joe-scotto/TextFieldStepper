@@ -50,6 +50,10 @@ public struct TextFieldStepper: View {
         )
     }
     
+    
+    
+    
+    
     /**
      * init(doubleValue: Binding<Double>, unit: String, label: String, config: TextFieldStepperConfig)
      */
@@ -57,12 +61,28 @@ public struct TextFieldStepper: View {
         doubleValue: Binding<Double>,
         unit: String? = nil,
         label: String? = nil,
+        increment: Double? = nil,
+        minimum: Double? = nil,
+        maximum: Double? = nil,
+        decrementImage: TextFieldStepperImage? = nil,
+        incrementImage: TextFieldStepperImage? = nil,
+        declineImage: TextFieldStepperImage? = nil,
+        confirmImage: TextFieldStepperImage? = nil,
+        disabledColor: Color? = nil,
         config: TextFieldStepperConfig = TextFieldStepperConfig()
     ) {
         // Compose config
         var config = config
             config.unit = unit ?? config.unit
             config.label = label ?? config.label
+            config.increment = increment ?? config.increment
+            config.minimum = minimum ?? config.minimum
+            config.maximum = maximum ?? config.maximum
+            config.decrementImage = decrementImage ?? config.decrementImage
+            config.incrementImage = incrementImage ?? config.incrementImage
+            config.declineImage = declineImage ?? config.declineImage
+            config.confirmImage = confirmImage ?? config.confirmImage
+            config.disabledColor = disabledColor ?? config.disabledColor
        
         // Assign properties
         self._doubleValue = doubleValue
