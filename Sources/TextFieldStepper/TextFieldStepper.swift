@@ -137,8 +137,6 @@ public struct TextFieldStepper: View {
             }
         }
         .onChange(of: doubleValue) { _ in
-            // Should validate here also just as a double check
-            
             textValue = formatTextValue(doubleValue)
         }
         .alert(isPresented: $showAlert) {
@@ -179,10 +177,13 @@ public struct TextFieldStepper: View {
                 )
             }
             
-            // If all checks pass, set doubleValue
+            // All checks passed, set the double value.
             if !showAlert {
                 doubleValue = textToDouble
                 closeKeyboard()
+                
+                // If doubleValue is unchanged, ensure the textValue is still formatted
+                textValue = formatTextValue(textToDouble)
             }
         } else {
             // 2. If more than one decimal, throw Alert
