@@ -74,9 +74,10 @@ Below are the parameters available on both `TextFieldStepper` and `TextFieldStep
 | declineImage   | TextFieldStepperImage | TextFieldStepperImage(systemName: “xmark.circle.fill”, color: Color.red)       |
 | confirmImage   | TextFieldStepperImage | TextFieldStepperImage(systemName: “checkmark.circle.fill”, color: Color.green) |
 | disabledColor  | Color                 | Color(UIColor.lightGray)                                                       |
+| labelOpacity   | Double                | 1.0                                                                            |
 
 # Styling
-Below are the default colors and images that `TextFieldStepper` uses. In addition to this, when a button is disabled it will use `Color(UIColor.lightGray)` which can be overridden with the `disabledColor` parameter.
+Below are the default colors and images that `TextFieldStepper` uses. In addition to this, when a button is disabled it will use `Color(UIColor.lightGray)` which can be overridden with the `disabledColor` parameter. You can also specify the label opacity with `labelOpacity`.
 
 | Button          | Color                 | Image                 |
 |-----------------|-----------------------|-----------------------|

@@ -65,6 +65,7 @@ public struct TextFieldStepper: View {
         declineImage: TextFieldStepperImage? = nil,
         confirmImage: TextFieldStepperImage? = nil,
         disabledColor: Color? = nil,
+        labelOpacity: Double? = 1.0,
         config: TextFieldStepperConfig = TextFieldStepperConfig()
     ) {
         // Compose config
@@ -79,6 +80,7 @@ public struct TextFieldStepper: View {
             config.declineImage = declineImage ?? config.declineImage
             config.confirmImage = confirmImage ?? config.confirmImage
             config.disabledColor = disabledColor ?? config.disabledColor
+            config.labelOpacity = labelOpacity ?? config.labelOpacity
        
         // Assign properties
         self._doubleValue = doubleValue
@@ -124,6 +126,7 @@ public struct TextFieldStepper: View {
                     Text(config.label)
                         .font(.footnote)
                         .fontWeight(.light)
+                        .opacity(config.labelOpacity)
                 }
             }
             

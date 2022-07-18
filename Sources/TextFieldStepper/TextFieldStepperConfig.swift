@@ -11,6 +11,7 @@ public struct TextFieldStepperConfig {
     var declineImage: TextFieldStepperImage
     var confirmImage: TextFieldStepperImage
     var disabledColor: Color
+    var labelOpacity: Double
 
     public init (
         unit: String = "",
@@ -22,7 +23,8 @@ public struct TextFieldStepperConfig {
         incrementImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "plus.circle.fill"),
         declineImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "xmark.circle.fill", color: Color.red),
         confirmImage: TextFieldStepperImage = TextFieldStepperImage(systemName: "checkmark.circle.fill", color: Color.green),
-        disabledColor: Color = Color(UIColor.lightGray)
+        disabledColor: Color = Color(UIColor.lightGray),
+        labelOpacity: Double = 1.0
     ) {
         self.unit = unit
         self.label = label
@@ -34,5 +36,6 @@ public struct TextFieldStepperConfig {
         self.declineImage = declineImage
         self.confirmImage = confirmImage
         self.disabledColor = disabledColor
+        self.labelOpacity = labelOpacity
     }
 }
