@@ -9,7 +9,9 @@ public struct TextFieldStepper: View {
     @State private var textValue = ""
     @State private var showAlert = false
     @State private var cancelled = false
+    @State private var confirmed = false
     @State private var alert: Alert? = nil
+    @State private var previousValue = 0.0
     
     private let config: TextFieldStepperConfig
     
@@ -17,7 +19,7 @@ public struct TextFieldStepper: View {
         Button(action: {
             textValue = formatTextValue(doubleValue)
             cancelled = true
-            closeKeyboard()
+            keyboardOpened = false
         }) {
             config.declineImage
         }
@@ -26,6 +28,7 @@ public struct TextFieldStepper: View {
     
     private var confirmButton: some View {
         Button(action: {
+            confirmed = true
             validateValue()
         }) {
             config.confirmImage
@@ -73,20 +76,20 @@ public struct TextFieldStepper: View {
     ) {
         // Compose config
         var config = config
-            config.unit = unit ?? config.unit
-            config.label = label ?? config.label
-            config.increment = increment ?? config.increment
-            config.minimum = minimum ?? config.minimum
-            config.maximum = maximum ?? config.maximum
-            config.decrementImage = decrementImage ?? config.decrementImage
-            config.incrementImage = incrementImage ?? config.incrementImage
-            config.declineImage = declineImage ?? config.declineImage
-            config.confirmImage = confirmImage ?? config.confirmImage
-            config.disabledColor = disabledColor ?? config.disabledColor
-            config.labelOpacity = labelOpacity ?? config.labelOpacity
-            config.labelColor = labelColor ?? config.labelColor
-            config.valueColor = valueColor ?? config.valueColor
-       
+        config.unit = unit ?? config.unit
+        config.label = label ?? config.label
+        config.increment = increment ?? config.increment
+        config.minimum = minimum ?? config.minimum
+        config.maximum = maximum ?? config.maximum
+        config.decrementImage = decrementImage ?? config.decrementImage
+        config.incrementImage = incrementImage ?? config.incrementImage
+        config.declineImage = declineImage ?? config.declineImage
+        config.confirmImage = confirmImage ?? config.confirmImage
+        config.disabledColor = disabledColor ?? config.disabledColor
+        config.labelOpacity = labelOpacity ?? config.labelOpacity
+        config.labelColor = labelColor ?? config.labelColor
+        config.valueColor = valueColor ?? config.valueColor
+        
         // Assign properties
         self._doubleValue = doubleValue
         self.config = config
@@ -108,19 +111,10 @@ public struct TextFieldStepper: View {
             VStack(spacing: 0) {
                 TextField("", text: $textValue)
                     .focused($keyboardOpened)
-                    .onSubmit {
-                        // Detect cancel button
-                        if cancelled {
-                            self.cancelled = false
-                            return
-                        }
-                        
-                        validateValue()
-                    }
-                .multilineTextAlignment(.center)
-                .font(.system(size: 24, weight: .black))
-                .keyboardType(.decimalPad)
-                .foregroundColor(config.valueColor)
+                    .multilineTextAlignment(.center)
+                    .font(.system(size: 24, weight: .black))
+                    .keyboardType(.decimalPad)
+                    .foregroundColor(config.valueColor)
                 
                 if !config.label.isEmpty {
                     Text(config.label)
@@ -141,8 +135,19 @@ public struct TextFieldStepper: View {
             }
         }
         .onChange(of: keyboardOpened) { _ in
+//            print("\(config.label): \(keyboardOpened)")
             if keyboardOpened {
-                textValue = textValue.replacingOccurrences(of: config.unit, with: "")
+                let formattedValue = textValue.replacingOccurrences(of: config.unit, with: "")
+                
+                // Format text value
+                textValue = formattedValue
+                
+                // Store old value
+                previousValue = Double(formattedValue) ?? 0
+            } else {
+                if !confirmed {
+                    validateValue()
+                }
             }
         }
         .onChange(of: doubleValue) { _ in
@@ -152,21 +157,18 @@ public struct TextFieldStepper: View {
             alert!
         }
     }
-            
-    func closeKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
     
-    func formatTextValue(_ value: Double) -> String {
+    private func formatTextValue(_ value: Double) -> String {
         String(format: "%g", value.decimal) + config.unit
     }
     
-    func validateValue() {
+    private func validateValue() {
         // Reset alert status
         showAlert = false
         
         // Confirm doubleValue is actually a Double
         if let textToDouble = Double(textValue) {
+            print(textToDouble)
             // 4. If doubleValue is less than config.minimum, throw Alert
             // 5. If doubleValue is greater than config.maximum, throw Alert
             if textToDouble.decimal < config.minimum {
@@ -176,6 +178,10 @@ public struct TextFieldStepper: View {
                     message: Text("\(config.label) must be at least \(formatTextValue(config.minimum)).")
                 )
                 
+                if !confirmed {
+                    doubleValue = 0
+                    textValue = formatTextValue(0)
+                }
             }
             
             if textToDouble.decimal > config.maximum {
@@ -184,12 +190,17 @@ public struct TextFieldStepper: View {
                     title: Text("Too large!"),
                     message: Text("\(config.label) must be at most \(formatTextValue(config.maximum)).")
                 )
+                
+                if !confirmed {
+                    doubleValue = 100
+                    textValue = formatTextValue(100)
+                }
             }
             
             // All checks passed, set the double value.
             if !showAlert {
                 doubleValue = textToDouble
-                closeKeyboard()
+                keyboardOpened = false
                 
                 // If doubleValue is unchanged, ensure the textValue is still formatted
                 textValue = formatTextValue(textToDouble)
@@ -198,6 +209,10 @@ public struct TextFieldStepper: View {
             // 2. If more than one decimal, throw Alert
             // 3. If contains characters, throw Alert (hardware keyboard issue)
             // 6. If doubleValue is empty, throw Alert
+            if !confirmed {
+                doubleValue = 0
+                textValue = formatTextValue(0)
+            }
             showAlert = true
             alert = Alert(
                 title: Text("Whoops!"),
