@@ -3,7 +3,8 @@ import SwiftUI
 public struct TextFieldStepper: View {
     @Binding var doubleValue: Double
     
-    @State private var keyboardOpened = false
+    @FocusState private var keyboardOpened
+    
     @State private var confirmEdit = false
     @State private var textValue = ""
     @State private var showAlert = false
@@ -105,14 +106,9 @@ public struct TextFieldStepper: View {
             }
             
             VStack(spacing: 0) {
-                TextField("", text: $textValue) { editingChanged in
-                    if editingChanged {
-                        // Keyboard opened, editing started
-                        keyboardOpened = true
-                        textValue = textValue.replacingOccurrences(of: config.unit, with: "")
-                    } else {
-                        keyboardOpened = false
-                        
+                TextField("", text: $textValue)
+                    .focused($keyboardOpened)
+                    .onSubmit {
                         // Detect cancel button
                         if cancelled {
                             self.cancelled = false
@@ -121,7 +117,6 @@ public struct TextFieldStepper: View {
                         
                         validateValue()
                     }
-                }
                 .multilineTextAlignment(.center)
                 .font(.system(size: 24, weight: .black))
                 .keyboardType(.decimalPad)
@@ -143,6 +138,11 @@ public struct TextFieldStepper: View {
                 if keyboardOpened {
                     confirmButton
                 }
+            }
+        }
+        .onChange(of: keyboardOpened) { _ in
+            if keyboardOpened {
+                textValue = textValue.replacingOccurrences(of: config.unit, with: "")
             }
         }
         .onChange(of: doubleValue) { _ in
