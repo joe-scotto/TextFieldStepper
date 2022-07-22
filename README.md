@@ -101,6 +101,11 @@ You can override the default images by creating an instance of `TextFieldStepper
     let image = TextFieldStepperImage(image: Image(systemName: "circle.fill")
     ```
     
+# Keyboard Hiding
+iOS handles hiding the keyboard pretty poorly so `TextFieldStepper` includes a modifier named `.closeKeyboard(on: )` to make it better. You do not need to specify the `on` parameter and by default it will enable both swipe and tap gestures. If you only want to use one gesture you can provide either `.Tap` or `.Swipe`.
+
+This modifier should be tied to a specific view in which you want interaction to occur, do not place it at the highest level of execution or things may not work as you intend.
+    
 # Floating point
 The underlying value that `TextFieldStepper` expects is a `Double` which of course can sometimes cause floating-point issues. The component itself doesn’t ever modify the value however for validation checks it will be rounded to 8 decimal places. This should not be an issue in nearly all situations but I just wanted to mention it for transparency sake. 
 
