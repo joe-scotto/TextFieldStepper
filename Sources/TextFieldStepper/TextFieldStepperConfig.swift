@@ -14,6 +14,7 @@ public struct TextFieldStepperConfig {
     var labelOpacity: Double
     var labelColor: Color
     var valueColor: Color
+    var shouldShowAlert: Bool
 
     public init (
         unit: String = "",
@@ -28,7 +29,8 @@ public struct TextFieldStepperConfig {
         disabledColor: Color = Color(UIColor.lightGray),
         labelOpacity: Double = 1.0,
         labelColor: Color = .primary,
-        valueColor: Color = .primary
+        valueColor: Color = .primary,
+        shouldShowAlert: Bool = true
     ) {
         self.unit = unit
         self.label = label
@@ -43,5 +45,6 @@ public struct TextFieldStepperConfig {
         self.labelOpacity = labelOpacity
         self.labelColor = labelColor
         self.valueColor = valueColor
+        self.shouldShowAlert = shouldShowAlert
     }
 }

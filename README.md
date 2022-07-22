@@ -3,7 +3,7 @@
 A SwiftUI component to make inputting numbers easier than the native `Stepper` component. In addition to increment and decrement buttons, the user can tap the number to change it using the keyboard or long press one of the buttons to continue running the action until released.
 
 # Platforms
-Tested on iOS 15.0 but should work on both iOS and iPadOS 14 and up.
+Tested on iOS 16.0 but should work on both iOS and iPadOS 15 and up.
 
 # Usage
 Creating a `TextFieldStepper` is simple. 
@@ -62,21 +62,22 @@ The defaults should be fine for most situations but there are certainly cases wh
 # Parameters
 Below are the parameters available on both `TextFieldStepper` and `TextFieldStepperConfig`.
 
-| Parameter      | Type                  | Default                                                                        |
-|----------------|-----------------------|--------------------------------------------------------------------------------|
-| unit           | String                | “”                                                                             |
-| label          | String                | “”                                                                             |
-| increment      | Double                | 0.1                                                                            |
-| minimum        | Double                | 0.0                                                                            |
-| maximum        | Double                | 100.0                                                                          |
-| decrementImage | TextFieldStepperImage | TextFieldStepperImage(systemName: "minus.circle.fill")                         |
-| incrementImage | TextFieldStepperImage | TextFieldStepperImage(systemName: "plus.circle.fill")                          |
-| declineImage   | TextFieldStepperImage | TextFieldStepperImage(systemName: “xmark.circle.fill”, color: Color.red)       |
-| confirmImage   | TextFieldStepperImage | TextFieldStepperImage(systemName: “checkmark.circle.fill”, color: Color.green) |
-| disabledColor  | Color                 | Color(UIColor.lightGray)                                                       |
-| labelOpacity   | Double                | 1.0                                                                            |
-| labelColor     | Color                 | .primary                                                                       |
-| valueColor     | Color                 | .primary                                                                       |
+| Parameter       | Type                  | Default                                                                        | Note                                                               |
+|-----------------|-----------------------|--------------------------------------------------------------------------------|--------------------------------------------------------------------|
+| unit            | String                | “”                                                                             | Unit to show after value.                                          |
+| label           | String                | “”                                                                             | Label to show under value.                                         |
+| increment       | Double                | 0.1                                                                            | How many points to increment or decrement                          |
+| minimum         | Double                | 0.0                                                                            | Minimum accepted value.                                            |
+| maximum         | Double                | 100.0                                                                          | Maximum accepted value.                                            |
+| decrementImage  | TextFieldStepperImage | TextFieldStepperImage(systemName: "minus.circle.fill")                         | Image for decrement button.                                        |
+| incrementImage  | TextFieldStepperImage | TextFieldStepperImage(systemName: "plus.circle.fill")                          | Image for increment button.                                        |
+| declineImage    | TextFieldStepperImage | TextFieldStepperImage(systemName: “xmark.circle.fill”, color: Color.red)       | Image for decline button.                                          |
+| confirmImage    | TextFieldStepperImage | TextFieldStepperImage(systemName: “checkmark.circle.fill”, color: Color.green) | Image for confirm button.                                          |
+| disabledColor   | Color                 | Color(UIColor.lightGray)                                                       | Color of disabled button.                                          |
+| labelOpacity    | Double                | 1.0                                                                            | Opacity of label under value.                                      |
+| labelColor      | Color                 | .primary                                                                       | Color of label under value.                                        |
+| valueColor      | Color                 | .primary                                                                       | Color of value.                                                    |
+| shouldShowAlert | Bool                  | true                                                                           | If alerts should show when a value is being defaulted due to error |
 
 # Styling
 Below are the default colors and images that `TextFieldStepper` uses. In addition to this, when a button is disabled it will use `Color(UIColor.lightGray)` which can be overridden with the `disabledColor` parameter. You can also specify the label opacity and color with `labelOpacity` and `labelColor`. If you want to change the color of the main value, use `valueColor`.
@@ -106,7 +107,7 @@ The underlying value that `TextFieldStepper` expects is a `Double` which of cour
 # License
 MIT License
 
-Copyright (c) 2021 Joe Scotto
+Copyright (c) 2022 Joe Scotto
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
