@@ -147,6 +147,8 @@ public struct TextFieldStepper: View {
             } else {
                 if !confirmed {
                     validateValue()
+                } else {
+                    confirmed = false
                 }
             }
         }
@@ -163,8 +165,13 @@ public struct TextFieldStepper: View {
     }
     
     private func validateValue() {
+        var title = "Whoops"
+        var message = "\(config.label) must contain a valid number."
+        var value = 0.0
+        
         // Reset alert status
         showAlert = false
+        
         
         // Confirm doubleValue is actually a Double
         if let textToDouble = Double(textValue) {
@@ -173,28 +180,16 @@ public struct TextFieldStepper: View {
             // 5. If doubleValue is greater than config.maximum, throw Alert
             if textToDouble.decimal < config.minimum {
                 showAlert = true
-                alert = Alert(
-                    title: Text("Too small!"),
-                    message: Text("\(config.label) must be at least \(formatTextValue(config.minimum)).")
-                )
-                
-                if !confirmed {
-                    doubleValue = 0
-                    textValue = formatTextValue(0)
-                }
+                title = "Too small!"
+                message = "\(config.label) must be at least \(formatTextValue(config.minimum))."
+                value = 0
             }
             
             if textToDouble.decimal > config.maximum {
                 showAlert = true
-                alert = Alert(
-                    title: Text("Too large!"),
-                    message: Text("\(config.label) must be at most \(formatTextValue(config.maximum)).")
-                )
-                
-                if !confirmed {
-                    doubleValue = 100
-                    textValue = formatTextValue(100)
-                }
+                title = "Too large!"
+                message = "\(config.label) must be at most \(formatTextValue(config.maximum))."
+                value = 100
             }
             
             // All checks passed, set the double value.
@@ -209,15 +204,25 @@ public struct TextFieldStepper: View {
             // 2. If more than one decimal, throw Alert
             // 3. If contains characters, throw Alert (hardware keyboard issue)
             // 6. If doubleValue is empty, throw Alert
-            if !confirmed {
-                doubleValue = 0
-                textValue = formatTextValue(0)
-            }
             showAlert = true
-            alert = Alert(
-                title: Text("Whoops!"),
-                message: Text("\(config.label) must contain a valid number.")
-            )
         }
+        
+        // Define alert if needed
+        if showAlert {
+            alert = Alert(
+                title: Text(title),
+                message: Text(message)
+            )
+            
+            if !confirmed {
+                doubleValue = value
+                textValue = formatTextValue(value)
+            }
+        }
+    }
+    
+    private func setValue(_ value: Double) {
+        doubleValue = 100
+        textValue = formatTextValue(100)
     }
 }

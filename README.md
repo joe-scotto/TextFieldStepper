@@ -3,7 +3,7 @@
 A SwiftUI component to make inputting numbers easier than the native `Stepper` component. In addition to increment and decrement buttons, the user can tap the number to change it using the keyboard or long press one of the buttons to continue running the action until released.
 
 # Platforms
-Tested on iOS 15.0 but should work on both iOS and iPadOS 14 and up.
+Tested on iOS 16.0 but should work on both iOS and iPadOS 15 and up. 
 
 # Usage
 Creating a `TextFieldStepper` is simple. 
@@ -106,7 +106,7 @@ The underlying value that `TextFieldStepper` expects is a `Double` which of cour
 # License
 MIT License
 
-Copyright (c) 2021 Joe Scotto
+Copyright (c) 2022 Joe Scotto
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
