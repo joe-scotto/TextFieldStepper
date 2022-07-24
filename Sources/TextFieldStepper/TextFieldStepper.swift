@@ -16,7 +16,6 @@ public struct TextFieldStepper: View {
     @State private var alertTitle = ""
     @State private var alertMessage = ""
     
-    
     private let config: TextFieldStepperConfig
     
     private var cancelButton: some View {
@@ -122,6 +121,7 @@ public struct TextFieldStepper: View {
                     .font(.system(size: 24, weight: .black))
                     .keyboardType(.decimalPad)
                     .foregroundColor(config.valueColor)
+                    .monospacedDigit()
                 
                 if !config.label.isEmpty {
                     Text(config.label)
