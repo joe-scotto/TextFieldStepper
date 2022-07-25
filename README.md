@@ -109,7 +109,7 @@ iOS poorly handles hiding the keyboard so `TextFieldStepper` includes a modifier
 This modifier should be tied to a specific view in which you want interaction to occur, do not place it at the highest level of execution or things may not work as you intend.
     
 # Floating point
-The underlying value that `TextFieldStepper` expects is a `Double` which of course can sometimes cause floating-point issues. The component itself doesn’t ever modify the value however for validation checks it will be [`.rounded()`](https://developer.apple.com/documentation/swift/double/rounded(_:)) to 9 decimal places and then truncated to 8. This should not be an issue in nearly all situations but I just wanted to mention it for transparency sake. 
+The underlying value that `TextFieldStepper` expects is a `Double` which of course can sometimes cause floating-point issues. The component itself doesn’t ever modify the value however for validation checks it will be [`.rounded()`](https://developer.apple.com/documentation/swift/double/rounded(_:)) to 9 decimal places. The value then is truncated when shown in text format to 8 decimal places, however, this can be changed with the `maximumDecimalPlaces` parameter. This should not be an issue in nearly all situations but I just wanted to mention it for transparency sake. 
 
 # License
 MIT License
