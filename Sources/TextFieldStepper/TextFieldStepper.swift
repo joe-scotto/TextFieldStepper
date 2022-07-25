@@ -173,8 +173,8 @@ public struct TextFieldStepper: View {
         var stringValue = String(format: "%g", value.decimal)
         
         let formatter = NumberFormatter()
-            formatter.minimumFractionDigits = config.minimumDecimalPlaces
-            formatter.maximumFractionDigits = config.maximumDecimalPlaces
+            formatter.minimumFractionDigits = config.minimumDecimalPlaces < 0 ? 0 : config.minimumDecimalPlaces
+            formatter.maximumFractionDigits = config.maximumDecimalPlaces > 8 ? 8 : config.maximumDecimalPlaces
             formatter.roundingMode = .down
         
         // Format according to config otherwise fallback to old formatting

@@ -36,15 +36,6 @@ public struct TextFieldStepperConfig {
         minimumDecimalPlaces: Int = 0,
         maximumDecimalPlaces: Int = 8
     ) {
-        // Run error checks
-        if minimumDecimalPlaces < 0 {
-            fatalError("minimumDecimalPlaces cannot be less than 0.")
-        }
-        
-        if maximumDecimalPlaces > 8 {
-            fatalError("maximumDecimalPlaces cannot be greater than 8.")
-        }
-        
         self.unit = unit
         self.label = label
         self.increment = increment
