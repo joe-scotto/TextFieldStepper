@@ -62,22 +62,24 @@ The defaults should be fine for most situations but there are certainly cases wh
 # Parameters
 Below are the parameters available on both `TextFieldStepper` and `TextFieldStepperConfig`.
 
-| Parameter       | Type                  | Default                                                                        | Note                                                               |
-|-----------------|-----------------------|--------------------------------------------------------------------------------|--------------------------------------------------------------------|
-| unit            | String                | “”                                                                             | Unit to show after value.                                          |
-| label           | String                | “”                                                                             | Label to show under value.                                         |
-| increment       | Double                | 0.1                                                                            | How many points to increment or decrement                          |
-| minimum         | Double                | 0.0                                                                            | Minimum accepted value.                                            |
-| maximum         | Double                | 100.0                                                                          | Maximum accepted value.                                            |
-| decrementImage  | TextFieldStepperImage | TextFieldStepperImage(systemName: "minus.circle.fill")                         | Image for decrement button.                                        |
-| incrementImage  | TextFieldStepperImage | TextFieldStepperImage(systemName: "plus.circle.fill")                          | Image for increment button.                                        |
-| declineImage    | TextFieldStepperImage | TextFieldStepperImage(systemName: “xmark.circle.fill”, color: Color.red)       | Image for decline button.                                          |
-| confirmImage    | TextFieldStepperImage | TextFieldStepperImage(systemName: “checkmark.circle.fill”, color: Color.green) | Image for confirm button.                                          |
-| disabledColor   | Color                 | Color(UIColor.lightGray)                                                       | Color of disabled button.                                          |
-| labelOpacity    | Double                | 1.0                                                                            | Opacity of label under value.                                      |
-| labelColor      | Color                 | .primary                                                                       | Color of label under value.                                        |
-| valueColor      | Color                 | .primary                                                                       | Color of value.                                                    |
-| shouldShowAlert | Bool                  | true                                                                           | If alerts should show when a value is being defaulted due to error |
+| Parameter            | Type                  | Default                                                                        | Note                                                                |
+|----------------------|-----------------------|--------------------------------------------------------------------------------|---------------------------------------------------------------------|
+| unit                 | String                | “”                                                                             | Unit to show after value.                                           |
+| label                | String                | “”                                                                             | Label to show under value.                                          |
+| increment            | Double                | 0.1                                                                            | How many points to increment or decrement                           |
+| minimum              | Double                | 0.0                                                                            | Minimum accepted value.                                             |
+| maximum              | Double                | 100.0                                                                          | Maximum accepted value.                                             |
+| decrementImage       | TextFieldStepperImage | TextFieldStepperImage(systemName: "minus.circle.fill")                         | Image for decrement button.                                         |
+| incrementImage       | TextFieldStepperImage | TextFieldStepperImage(systemName: "plus.circle.fill")                          | Image for increment button.                                         |
+| declineImage         | TextFieldStepperImage | TextFieldStepperImage(systemName: “xmark.circle.fill”, color: Color.red)       | Image for decline button.                                           |
+| confirmImage         | TextFieldStepperImage | TextFieldStepperImage(systemName: “checkmark.circle.fill”, color: Color.green) | Image for confirm button.                                           |
+| disabledColor        | Color                 | Color(UIColor.lightGray)                                                       | Color of disabled button.                                           |
+| labelOpacity         | Double                | 1.0                                                                            | Opacity of label under value.                                       |
+| labelColor           | Color                 | .primary                                                                       | Color of label under value.                                         |
+| valueColor           | Color                 | .primary                                                                       | Color of value.                                                     |
+| shouldShowAlert      | Bool                  | true                                                                           | If alerts should show when a value is being defaulted due to error. |
+| minimumDecimalPlaces | Int                   | 0                                                                              | Minimum decimal places to always show after the value.              |
+| maximumDecimalPlaces | Int                   | 8                                                                              | Maximum decimal places to allow after value.                        |
 
 # Styling
 Below are the default colors and images that `TextFieldStepper` uses. In addition to this, when a button is disabled it will use `Color(UIColor.lightGray)` which can be overridden with the `disabledColor` parameter. You can also specify the label opacity and color with `labelOpacity` and `labelColor`. If you want to change the color of the main value, use `valueColor`.
@@ -107,7 +109,7 @@ iOS poorly handles hiding the keyboard so `TextFieldStepper` includes a modifier
 This modifier should be tied to a specific view in which you want interaction to occur, do not place it at the highest level of execution or things may not work as you intend.
     
 # Floating point
-The underlying value that `TextFieldStepper` expects is a `Double` which of course can sometimes cause floating-point issues. The component itself doesn’t ever modify the value however for validation checks it will be rounded to 8 decimal places. This should not be an issue in nearly all situations but I just wanted to mention it for transparency sake. 
+The underlying value that `TextFieldStepper` expects is a `Double` which of course can sometimes cause floating-point issues. The component itself doesn’t ever modify the value however for validation checks it will be [`.rounded()`](https://developer.apple.com/documentation/swift/double/rounded(_:)) to 9 decimal places and then truncated to 8. This should not be an issue in nearly all situations but I just wanted to mention it for transparency sake. 
 
 # License
 MIT License

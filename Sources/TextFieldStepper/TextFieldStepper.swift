@@ -76,6 +76,8 @@ public struct TextFieldStepper: View {
         labelColor: Color? = nil,
         valueColor: Color? = nil,
         shouldShowAlert: Bool? = nil,
+        minimumDecimalPlaces: Int? = nil,
+        maximumDecimalPlaces: Int? = nil,
         config: TextFieldStepperConfig = TextFieldStepperConfig()
     ) {
         // Compose config
@@ -94,6 +96,8 @@ public struct TextFieldStepper: View {
         config.labelColor = labelColor ?? config.labelColor
         config.valueColor = valueColor ?? config.valueColor
         config.shouldShowAlert = shouldShowAlert ?? config.shouldShowAlert
+        config.minimumDecimalPlaces = minimumDecimalPlaces ?? config.minimumDecimalPlaces
+        config.maximumDecimalPlaces = maximumDecimalPlaces ?? config.maximumDecimalPlaces
         
         // Assign properties
         self._doubleValue = doubleValue
@@ -166,7 +170,19 @@ public struct TextFieldStepper: View {
     }
     
     private func formatTextValue(_ value: Double) -> String {
-        String(format: "%g", value.decimal) + config.unit
+        var stringValue = String(format: "%g", value.decimal)
+        
+        let formatter = NumberFormatter()
+            formatter.minimumFractionDigits = config.minimumDecimalPlaces
+            formatter.maximumFractionDigits = config.maximumDecimalPlaces
+            formatter.roundingMode = .down
+        
+        // Format according to config otherwise fallback to old formatting
+        if let formattedValue = formatter.string(for: value.decimal) {
+            stringValue = formattedValue
+        }
+        
+        return stringValue + config.unit
     }
     
     private func validateValue() {
